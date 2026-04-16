@@ -3,3 +3,8 @@
   "buildCommand": "cd vite-project && pnpm build",
   "outputDirectory": "vite-project/dist"
 }
+{
+  "installCommand": "cd vite-project && pnpm install",
+  "buildCommand": "cd vite-project && pnpm build",
+  "outputDirectory": "vite-project/dist"
+}
