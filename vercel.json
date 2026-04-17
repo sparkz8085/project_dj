@@ -1,5 +1,5 @@
 {
-  "installCommand": "pnpm --dir vite-project install",
-  "buildCommand": "pnpm --dir vite-project build",
-  "outputDirectory": "vite-project/dist"
+  "installCommand": "pnpm install",
+  "buildCommand": "pnpm build",
+  "outputDirectory": "dist"
 }
