@@ -1,6 +1,8 @@
-import { useMemo, useState } from 'react'
+import { useEffect, useMemo, useState } from 'react'
 import './App.css'
 import SpotlightCard from './SpotlightCard'
+import CheckoutPage from './CheckoutPage'
+import PaymentPage from './PaymentPage'
 
 const products = [
   {
@@ -10,6 +12,12 @@ const products = [
     price: 8999,
     discount: 12,
     note: 'High-output haze for entrances, reveals, and dance-floor moments.',
+    image: buildProductArtwork({
+      title: 'Fog',
+      subtitle: 'Atmosphere',
+      gradient: ['#101a34', '#3b82f6'],
+      glow: '#a5f3fc',
+    }),
   },
   {
     id: 'led-bars-strip-lights',
@@ -18,6 +26,12 @@ const products = [
     price: 6499,
     discount: 10,
     note: 'Linear color washes for truss, walls, and backdrop accents.',
+    image: buildProductArtwork({
+      title: 'LED',
+      subtitle: 'Wash',
+      gradient: ['#1f2937', '#8b5cf6'],
+      glow: '#f0abfc',
+    }),
   },
   {
     id: 'strobe-lights',
@@ -26,6 +40,12 @@ const products = [
     price: 4599,
     discount: 14,
     note: 'Sharp flash effects that punch up drops and hype transitions.',
+    image: buildProductArtwork({
+      title: 'Strobe',
+      subtitle: 'Pulse',
+      gradient: ['#111827', '#f97316'],
+      glow: '#fde68a',
+    }),
   },
   {
     id: 'laser-lights',
@@ -34,6 +54,12 @@ const products = [
     price: 7899,
     discount: 15,
     note: 'Precise beams and patterns that fill the room with motion.',
+    image: buildProductArtwork({
+      title: 'Laser',
+      subtitle: 'Beams',
+      gradient: ['#08111f', '#ec4899'],
+      glow: '#67e8f9',
+    }),
   },
   {
     id: 'moving-head-lights',
@@ -42,6 +68,12 @@ const products = [
     price: 12499,
     discount: 18,
     note: 'Pan and tilt heads for sweeps, color changes, and show cues.',
+    image: buildProductArtwork({
+      title: 'Move',
+      subtitle: 'Head',
+      gradient: ['#0f172a', '#14b8a6'],
+      glow: '#99f6e4',
+    }),
   },
   {
     id: 'par-lights',
@@ -50,8 +82,51 @@ const products = [
     price: 3799,
     discount: 11,
     note: 'Workhorse flood lighting for clean, even color coverage.',
+    image: buildProductArtwork({
+      title: 'PAR',
+      subtitle: 'Wash',
+      gradient: ['#172554', '#f59e0b'],
+      glow: '#fef08a',
+    }),
   },
 ]
+
+function buildProductArtwork({ title, subtitle, gradient, glow }) {
+  const [startColor, endColor] = gradient
+
+  return `data:image/svg+xml;charset=UTF-8,${encodeURIComponent(`
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 640 420" role="img" aria-label="${title} product illustration">
+      <defs>
+        <linearGradient id="bg" x1="0" y1="0" x2="1" y2="1">
+          <stop offset="0%" stop-color="${startColor}" />
+          <stop offset="100%" stop-color="${endColor}" />
+        </linearGradient>
+        <radialGradient id="glow" cx="50%" cy="35%" r="55%">
+          <stop offset="0%" stop-color="${glow}" stop-opacity="0.9" />
+          <stop offset="70%" stop-color="${glow}" stop-opacity="0.18" />
+          <stop offset="100%" stop-color="${glow}" stop-opacity="0" />
+        </radialGradient>
+      </defs>
+      <rect width="640" height="420" rx="36" fill="url(#bg)" />
+      <circle cx="180" cy="110" r="140" fill="url(#glow)" />
+      <circle cx="490" cy="300" r="110" fill="rgba(255,255,255,0.08)" />
+      <g opacity="0.18">
+        <rect x="70" y="276" width="500" height="20" rx="10" fill="#ffffff" />
+        <rect x="112" y="230" width="416" height="18" rx="9" fill="#ffffff" />
+      </g>
+      <g transform="translate(320 178)">
+        <rect x="-104" y="-58" width="208" height="116" rx="28" fill="rgba(255,255,255,0.12)" stroke="rgba(255,255,255,0.22)" />
+        <rect x="-72" y="-30" width="144" height="60" rx="18" fill="rgba(255,255,255,0.18)" />
+        <rect x="-18" y="52" width="36" height="84" rx="12" fill="rgba(255,255,255,0.22)" />
+        <circle cx="0" cy="0" r="38" fill="${glow}" fill-opacity="0.28" />
+        <circle cx="0" cy="0" r="22" fill="#ffffff" fill-opacity="0.7" />
+        <path d="M0 -96 L24 -48 L-24 -48 Z" fill="rgba(255,255,255,0.24)" />
+      </g>
+      <text x="56" y="84" fill="#fff" font-family="Segoe UI, Arial, sans-serif" font-size="44" font-weight="700">${title}</text>
+      <text x="56" y="128" fill="rgba(255,255,255,0.82)" font-family="Segoe UI, Arial, sans-serif" font-size="22" font-weight="600">${subtitle}</text>
+    </svg>
+  `)}`
+}
 
 const durations = [
   { label: '2 hours', hours: 2, multiplier: 1 },
@@ -73,20 +148,42 @@ const formatCurrency = (value) =>
     maximumFractionDigits: 0,
   }).format(value)
 
+const getViewFromHash = () => {
+  if (window.location.hash === '#checkout') {
+    return 'checkout'
+  }
+
+  if (window.location.hash === '#payment') {
+    return 'payment'
+  }
+
+  return 'catalog'
+}
+
 function App() {
   const [cart, setCart] = useState({
     'smoke-fog-machine': 1,
     'moving-head-lights': 1,
   })
   const [selectedDuration, setSelectedDuration] = useState(durations[4])
+  const [view, setView] = useState(() => getViewFromHash())
+
+  useEffect(() => {
+    const handleHashChange = () => {
+      setView(getViewFromHash())
+    }
+
+    window.addEventListener('hashchange', handleHashChange)
+    handleHashChange()
+
+    return () => window.removeEventListener('hashchange', handleHashChange)
+  }, [])
 
   const cartItems = useMemo(() => {
     return products
       .map((product) => {
         const quantity = cart[product.id] || 0
-        const discountedPrice = Math.round(
-          product.price * (1 - product.discount / 100),
-        )
+        const discountedPrice = Math.round(product.price * (1 - product.discount / 100))
 
         return {
           ...product,
@@ -98,13 +195,8 @@ function App() {
       .filter((product) => product.quantity > 0)
   }, [cart])
 
-  const equipmentTotal = cartItems.reduce(
-    (sum, item) => sum + item.lineTotal,
-    0,
-  )
-  const durationCharge = Math.round(
-    equipmentTotal * (selectedDuration.multiplier - 1),
-  )
+  const equipmentTotal = cartItems.reduce((sum, item) => sum + item.lineTotal, 0)
+  const durationCharge = Math.round(equipmentTotal * (selectedDuration.multiplier - 1))
   const grandTotal = equipmentTotal + durationCharge
   const totalSavings = cartItems.reduce(
     (sum, item) => sum + item.quantity * (item.price - item.discountedPrice),
@@ -129,6 +221,48 @@ function App() {
     })
   }
 
+  const openPaymentPage = () => {
+    if (cartItems.length > 0) {
+      window.location.hash = 'payment'
+    }
+  }
+
+  const openCheckoutPage = () => {
+    if (cartItems.length > 0) {
+      window.location.hash = 'checkout'
+    }
+  }
+
+  const returnToCatalog = () => {
+    window.location.hash = ''
+  }
+
+  const returnToCheckout = () => {
+    window.location.hash = 'checkout'
+  }
+
+  if (view === 'checkout') {
+    return (
+      <CheckoutPage
+        cartItems={cartItems}
+        selectedDuration={selectedDuration}
+        durations={durations}
+        setSelectedDuration={setSelectedDuration}
+        equipmentTotal={equipmentTotal}
+        durationCharge={durationCharge}
+        totalSavings={totalSavings}
+        grandTotal={grandTotal}
+        formatCurrency={formatCurrency}
+        onBack={returnToCatalog}
+        onProceed={openPaymentPage}
+      />
+    )
+  }
+
+  if (view === 'payment') {
+    return <PaymentPage amount={grandTotal} onBack={returnToCheckout} />
+  }
+
   return (
     <div className="storefront">
       <header className="topbar">
@@ -142,10 +276,7 @@ function App() {
 
         <label className="searchbar" aria-label="Search DJ equipment">
           <span className="search-icon">Search</span>
-          <input
-            type="search"
-            placeholder="Search lights, fog, and show effects"
-          />
+          <input type="search" placeholder="Search lights, fog, and show effects" />
         </label>
       </header>
 
@@ -154,8 +285,8 @@ function App() {
           <span className="hero-pill">10%+ off on every component</span>
           <h2>Book a full show rig for weddings, clubs, and private events.</h2>
           <p>
-            Mix and match production gear, then choose your rental duration to
-            update the checkout total instantly.
+            Mix and match production gear, then choose your rental duration to update the
+            checkout total instantly.
           </p>
 
           <div className="hero-stats">
@@ -178,8 +309,8 @@ function App() {
           <span>Current basket</span>
           <strong>{cartItems.length} item types selected</strong>
           <p>
-            Equipment total {formatCurrency(equipmentTotal)} before the chosen
-            rental duration is applied.
+            Equipment total {formatCurrency(equipmentTotal)} before the chosen rental duration is
+            applied.
           </p>
         </aside>
       </section>
@@ -196,9 +327,7 @@ function App() {
 
           <div className="product-grid">
             {products.map((product) => {
-              const discountedPrice = Math.round(
-                product.price * (1 - product.discount / 100),
-              )
+              const discountedPrice = Math.round(product.price * (1 - product.discount / 100))
               const quantity = cart[product.id] || 0
 
               return (
@@ -206,6 +335,14 @@ function App() {
                   <div className="product-topline">
                     <span className="tag">{product.tag}</span>
                     <span className="discount">{product.discount}% off</span>
+                  </div>
+                  <div className="product-image-frame">
+                    <img
+                      className="product-image"
+                      src={product.image}
+                      alt={product.name}
+                      loading="lazy"
+                    />
                   </div>
                   <h4>{product.name}</h4>
                   <p>{product.note}</p>
@@ -222,91 +359,20 @@ function App() {
                       +
                     </button>
                   </div>
-                  <button
-                    type="button"
-                    className="add-button"
-                    onClick={() => updateQuantity(product.id, 1)}
-                  >
+                  <button type="button" className="add-button" onClick={() => updateQuantity(product.id, 1)}>
                     Add to booking
                   </button>
                 </SpotlightCard>
               )
             })}
           </div>
-        </section>
 
-        <aside className="checkout">
-          <div className="section-head checkout-head">
-            <div>
-              <h3>Checkout</h3>
-              <p>Pick the rental duration to recalculate the total.</p>
-            </div>
-          </div>
-
-          <SpotlightCard className="duration-card">
-            <div className="duration-title">
-              <span>Service duration</span>
-              <strong>{selectedDuration.label}</strong>
-            </div>
-
-            <div className="duration-grid">
-              {durations.map((duration) => (
-                <button
-                  key={duration.label}
-                  type="button"
-                  className={
-                    duration.label === selectedDuration.label ? 'active' : ''
-                  }
-                  onClick={() => setSelectedDuration(duration)}
-                >
-                  <span>{duration.label}</span>
-                  <small>x{duration.multiplier.toFixed(2)}</small>
-                </button>
-              ))}
-            </div>
-          </SpotlightCard>
-
-          <SpotlightCard className="bill-card">
-            <div className="bill-row">
-              <span>Equipment subtotal</span>
-              <strong>{formatCurrency(equipmentTotal)}</strong>
-            </div>
-            <div className="bill-row">
-              <span>Duration adjustment</span>
-              <strong>{formatCurrency(durationCharge)}</strong>
-            </div>
-            <div className="bill-row">
-              <span>Total savings from discounts</span>
-              <strong>{formatCurrency(totalSavings)}</strong>
-            </div>
-            <div className="bill-total">
-              <span>Payable amount</span>
-              <strong>{formatCurrency(grandTotal)}</strong>
-            </div>
-            <button type="button" className="checkout-button">
-              Proceed to book
+          <div className="catalog-actions">
+            <button type="button" className="checkout-button" onClick={openCheckoutPage} disabled={!cartItems.length}>
+              Review basket and checkout
             </button>
-          </SpotlightCard>
-
-          <SpotlightCard className="order-list">
-            <h4>Order summary</h4>
-            {cartItems.length > 0 ? (
-              cartItems.map((item) => (
-                <div key={item.id} className="order-item">
-                  <div>
-                    <span>{item.name}</span>
-                    <small>
-                      {item.quantity} x {formatCurrency(item.discountedPrice)}
-                    </small>
-                  </div>
-                  <strong>{formatCurrency(item.lineTotal)}</strong>
-                </div>
-              ))
-            ) : (
-              <p className="empty-state">Add components to see your booking summary.</p>
-            )}
-          </SpotlightCard>
-        </aside>
+          </div>
+        </section>
       </main>
     </div>
   )
