@@ -1,8 +1,12 @@
 import { useEffect, useMemo, useState } from 'react'
 import './App.css'
+import AuthPage from './AuthPage'
 import SpotlightCard from './SpotlightCard'
 import CheckoutPage from './CheckoutPage'
 import PaymentPage from './PaymentPage'
+
+const USERS_STORAGE_KEY = 'stagekart-users'
+const SESSION_STORAGE_KEY = 'stagekart-session'
 
 const products = [
   {
@@ -161,12 +165,61 @@ const getViewFromHash = () => {
 }
 
 function App() {
+  const [authUser, setAuthUser] = useState(() => {
+    try {
+      return JSON.parse(localStorage.getItem(SESSION_STORAGE_KEY) || 'null')
+    } catch {
+      return null
+    }
+  })
   const [cart, setCart] = useState({
     'smoke-fog-machine': 1,
     'moving-head-lights': 1,
   })
   const [selectedDuration, setSelectedDuration] = useState(durations[4])
+  const [searchQuery, setSearchQuery] = useState('')
   const [view, setView] = useState(() => getViewFromHash())
+
+  const getStoredUsers = () => {
+    try {
+      return JSON.parse(localStorage.getItem(USERS_STORAGE_KEY) || '[]')
+    } catch {
+      return []
+    }
+  }
+
+  const saveSession = (user) => {
+    setAuthUser(user)
+    localStorage.setItem(SESSION_STORAGE_KEY, JSON.stringify(user))
+  }
+
+  const handleSignup = ({ name, email, password }) => {
+    const users = getStoredUsers()
+    const existingUser = users.find((user) => user.email === email)
+
+    if (existingUser) {
+      alert('An account with this email already exists. Please login instead.')
+      return
+    }
+
+    const newUser = { name, email, password }
+    localStorage.setItem(USERS_STORAGE_KEY, JSON.stringify([...users, newUser]))
+    saveSession({ name, email })
+  }
+
+  const handleLogin = ({ email, password }) => {
+    const users = getStoredUsers()
+    const matchedUser = users.find(
+      (user) => user.email === email && user.password === password,
+    )
+
+    if (!matchedUser) {
+      return { ok: false, message: 'Invalid email or password.' }
+    }
+
+    saveSession({ name: matchedUser.name, email: matchedUser.email })
+    return { ok: true }
+  }
 
   useEffect(() => {
     const handleHashChange = () => {
@@ -194,6 +247,22 @@ function App() {
       })
       .filter((product) => product.quantity > 0)
   }, [cart])
+
+  const filteredProducts = useMemo(() => {
+    const normalizedQuery = searchQuery.trim().toLowerCase()
+
+    if (!normalizedQuery) {
+      return products
+    }
+
+    return products.filter((product) => {
+      const searchableText = [product.name, product.tag, product.note]
+        .join(' ')
+        .toLowerCase()
+
+      return searchableText.includes(normalizedQuery)
+    })
+  }, [searchQuery])
 
   const equipmentTotal = cartItems.reduce((sum, item) => sum + item.lineTotal, 0)
   const durationCharge = Math.round(equipmentTotal * (selectedDuration.multiplier - 1))
@@ -241,6 +310,17 @@ function App() {
     window.location.hash = 'checkout'
   }
 
+  const handleLogout = () => {
+    localStorage.removeItem(SESSION_STORAGE_KEY)
+    setAuthUser(null)
+    window.location.hash = ''
+    setSearchQuery('')
+  }
+
+  if (!authUser) {
+    return <AuthPage onLogin={handleLogin} onSignup={handleSignup} />
+  }
+
   if (view === 'checkout') {
     return (
       <CheckoutPage
@@ -274,10 +354,22 @@ function App() {
           </div>
         </div>
 
-        <label className="searchbar" aria-label="Search DJ equipment">
-          <span className="search-icon">Search</span>
-          <input type="search" placeholder="Search lights, fog, and show effects" />
-        </label>
+        <div className="topbar-actions">
+          <button type="button" className="logout-button" onClick={handleLogout}>
+            Logout
+          </button>
+
+          <label className="searchbar" aria-label="Search DJ equipment">
+            <span className="search-icon">Search</span>
+            <input
+              type="search"
+              placeholder="Search lights, fog, and show effects"
+              value={searchQuery}
+              onChange={(event) => setSearchQuery(event.target.value)}
+              aria-label="Search products"
+            />
+          </label>
+        </div>
       </header>
 
       <section className="hero-panel">
@@ -326,7 +418,8 @@ function App() {
           </div>
 
           <div className="product-grid">
-            {products.map((product) => {
+            {filteredProducts.length > 0 ? (
+              filteredProducts.map((product) => {
               const discountedPrice = Math.round(product.price * (1 - product.discount / 100))
               const quantity = cart[product.id] || 0
 
@@ -364,7 +457,13 @@ function App() {
                   </button>
                 </SpotlightCard>
               )
-            })}
+              })
+            ) : (
+              <div className="no-results">
+                <h4>No products found</h4>
+                <p>Try searching by product name, tag, or description.</p>
+              </div>
+            )}
           </div>
 
           <div className="catalog-actions">
