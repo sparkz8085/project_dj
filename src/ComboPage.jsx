@@ -46,8 +46,12 @@ function ComboPage({ comboPacks, cart, formatCurrency, updateQuantity, onBack, o
               return (
                 <SpotlightCard key={pack.id} className="combo-select-card">
                   <div className="product-topline">
-                    <span className="tag">{pack.tag}</span>
-                    <span className="discount">Flat rate</span>
+                    <span className="tag" style={{ background: pack.accentSoft, color: pack.accentColor }}>
+                      {pack.tag}
+                    </span>
+                    <span className="discount" style={{ background: pack.accentSoft, color: pack.accentColor }}>
+                      Flat rate
+                    </span>
                   </div>
                   <div className="product-image-frame">
                     <img className="product-image" src={pack.image} alt={pack.name} loading="lazy" />
@@ -58,12 +62,12 @@ function ComboPage({ comboPacks, cart, formatCurrency, updateQuantity, onBack, o
                     <strong>{formatCurrency(pack.price)}</strong>
                     <span className="strike">Per pack</span>
                   </div>
-                  <div className="combo-components">
+                    <div className="combo-components" style={{ border: `1px solid ${pack.accentSoft}` }}>
                     <span>Included components</span>
                     <ul>
                       {pack.components.map((component) => (
                         <li key={component.label}>
-                          <strong>{component.quantity}x</strong>
+                            <strong style={{ color: pack.accentColor }}>{component.quantity}x</strong>
                           <span>{component.label}</span>
                         </li>
                       ))}
@@ -105,7 +109,9 @@ function ComboPage({ comboPacks, cart, formatCurrency, updateQuantity, onBack, o
                       {pack.components.map((component) => `${component.quantity}x ${component.label}`).join(' + ')}
                     </small>
                   </div>
-                  <strong>{(cart[pack.id] || 0)} x {formatCurrency(pack.price)}</strong>
+                  <strong style={{ color: pack.accentColor }}>
+                    {(cart[pack.id] || 0)} x {formatCurrency(pack.price)}
+                  </strong>
                 </li>
               ))}
               {selectedCount === 0 ? <li className="combo-empty">No combo selected yet.</li> : null}

@@ -383,6 +383,9 @@ const comboPacks = [
     tag: 'Combo package',
     price: 9999,
     discount: 0,
+    spotlightColor: 'rgba(34, 197, 94, 0.26)',
+    accentColor: '#22c55e',
+    accentSoft: 'rgba(34, 197, 94, 0.12)',
     note: 'Speakers + PAR Lights + Mic. A lean starter pack for private parties and house events.',
     components: [
       { label: 'DJ Speakers (Pair)', quantity: 1 },
@@ -402,6 +405,9 @@ const comboPacks = [
     tag: 'Combo package',
     price: 19999,
     discount: 0,
+    spotlightColor: 'rgba(236, 72, 153, 0.28)',
+    accentColor: '#ec4899',
+    accentSoft: 'rgba(236, 72, 153, 0.12)',
     note: 'Speakers + Moving Head + Laser + Fog. Built for high-energy club and stage nights.',
     components: [
       { label: 'DJ Speakers (Pair)', quantity: 1 },
@@ -422,6 +428,9 @@ const comboPacks = [
     tag: 'Combo package',
     price: 39999,
     discount: 0,
+    spotlightColor: 'rgba(245, 158, 11, 0.28)',
+    accentColor: '#f59e0b',
+    accentSoft: 'rgba(245, 158, 11, 0.12)',
     note: 'Full setup + LED wall + pyro + truss. The complete showpiece package for big weddings.',
     components: [
       { label: 'DJ Speakers (Pair)', quantity: 2 },
@@ -526,6 +535,7 @@ function App() {
   const [selectedDuration, setSelectedDuration] = useState(durations[4])
   const [searchQuery, setSearchQuery] = useState('')
   const [view, setView] = useState(() => getViewFromHash())
+  const [activeComboIndex, setActiveComboIndex] = useState(0)
 
   const getStoredUsers = () => {
     try {
@@ -586,6 +596,20 @@ function App() {
 
     return () => window.removeEventListener('hashchange', handleHashChange)
   }, [])
+
+  useEffect(() => {
+    if (comboPacks.length <= 1) {
+      return undefined
+    }
+
+    const timerId = window.setInterval(() => {
+      setActiveComboIndex((currentIndex) => (currentIndex + 1) % comboPacks.length)
+    }, 5000)
+
+    return () => window.clearInterval(timerId)
+  }, [])
+
+  const activeComboPack = comboPacks[activeComboIndex % comboPacks.length]
 
   const cartItems = useMemo(() => {
     return allProducts
@@ -785,33 +809,49 @@ function App() {
         <div className="section-head">
           <div>
             <h3>Combo packs at a glance</h3>
-            <p>See the ready-made packages and exactly what each one includes.</p>
+            <p>One combo appears at a time and automatically changes every 5 seconds.</p>
           </div>
           <span className="section-chip">3 curated packages</span>
         </div>
 
-        <div className="combo-overview-grid">
-          {comboPacks.map((pack) => (
-            <SpotlightCard key={pack.id} className="combo-overview-card">
-              <div className="product-topline">
-                <span className="tag">{pack.tag}</span>
-                <span className="discount">{formatCurrency(pack.price)}</span>
+        <div className="combo-overview-shell">
+          <SpotlightCard
+            key={activeComboPack.id}
+            className="combo-overview-card combo-marquee-card"
+            spotlightColor={activeComboPack.spotlightColor}
+          >
+            <div className="product-topline">
+              <span className="tag" style={{ background: activeComboPack.accentSoft, color: activeComboPack.accentColor }}>
+                {activeComboPack.tag}
+              </span>
+              <span className="discount" style={{ background: activeComboPack.accentSoft, color: activeComboPack.accentColor }}>
+                {formatCurrency(activeComboPack.price)}
+              </span>
+            </div>
+            <h4>{activeComboPack.name}</h4>
+            <p>{activeComboPack.note}</p>
+            <div className="combo-components">
+              <span>Included components</span>
+              <ul>
+                {activeComboPack.components.map((component) => (
+                  <li key={component.label}>
+                    <strong>{component.quantity}x</strong>
+                    <span>{component.label}</span>
+                  </li>
+                ))}
+              </ul>
+            </div>
+            <div className="combo-overview-footer">
+              <span>
+                {activeComboIndex + 1} of {comboPacks.length}
+              </span>
+              <div className="combo-overview-dots" aria-hidden="true">
+                {comboPacks.map((pack, index) => (
+                  <span key={pack.id} className={index === activeComboIndex ? 'active' : ''} />
+                ))}
               </div>
-              <h4>{pack.name}</h4>
-              <p>{pack.note}</p>
-              <div className="combo-components">
-                <span>Included components</span>
-                <ul>
-                  {pack.components.map((component) => (
-                    <li key={component.label}>
-                      <strong>{component.quantity}x</strong>
-                      <span>{component.label}</span>
-                    </li>
-                  ))}
-                </ul>
-              </div>
-            </SpotlightCard>
-          ))}
+            </div>
+          </SpotlightCard>
         </div>
       </section>
 

@@ -247,10 +247,7 @@
   margin-top: 18px;
 }
 
-.combo-overview-grid {
-  display: grid;
-  grid-template-columns: repeat(3, minmax(0, 1fr));
-  gap: 16px;
+.combo-overview-shell {
   margin-top: 16px;
 }
 
@@ -259,6 +256,10 @@
   display: flex;
   flex-direction: column;
   gap: 14px;
+}
+
+.combo-marquee-card {
+  animation: combo-marquee-fade 0.55s ease;
 }
 
 .combo-overview-card h4 {
@@ -310,6 +311,45 @@
 
 .combo-components li span {
   color: #cbd5e1;
+}
+
+.combo-overview-footer {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  padding-top: 2px;
+  color: #aab7d6;
+}
+
+.combo-overview-dots {
+  display: inline-flex;
+  gap: 8px;
+}
+
+.combo-overview-dots span {
+  width: 9px;
+  height: 9px;
+  border-radius: 999px;
+  background: rgba(138, 160, 255, 0.22);
+  transition: transform 0.2s ease, background-color 0.2s ease;
+}
+
+.combo-overview-dots span.active {
+  transform: scale(1.15);
+  background: #ffd84d;
+}
+
+@keyframes combo-marquee-fade {
+  from {
+    opacity: 0;
+    transform: translateY(12px) scale(0.985);
+  }
+
+  to {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
 }
 
 .layout {
@@ -661,10 +701,6 @@
 @media (max-width: 760px) {
   .storefront {
     padding: 14px;
-  }
-
-  .combo-overview-grid {
-    grid-template-columns: 1fr;
   }
 
   .topbar {
