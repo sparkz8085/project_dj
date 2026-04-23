@@ -1,6 +1,7 @@
 import { useEffect, useMemo, useState } from 'react'
 import './App.css'
 import AuthPage from './AuthPage'
+import ComboPage from './ComboPage'
 import SpotlightCard from './SpotlightCard'
 import CheckoutPage from './CheckoutPage'
 import PaymentPage from './PaymentPage'
@@ -93,7 +94,352 @@ const products = [
       glow: '#fef08a',
     }),
   },
+  {
+    id: 'dj-speakers-pair',
+    name: 'DJ Speakers (Pair)',
+    tag: 'Audio equipment',
+    price: 6000,
+    discount: 0,
+    note: 'High-output main speakers for clean coverage at weddings, clubs, and stage shows.',
+    image: buildProductArtwork({
+      title: 'DJ',
+      subtitle: 'Speakers',
+      gradient: ['#0f172a', '#2563eb'],
+      glow: '#93c5fd',
+    }),
+  },
+  {
+    id: 'subwoofer-bass-unit',
+    name: 'Subwoofer Bass Unit',
+    tag: 'Audio equipment',
+    price: 4500,
+    discount: 0,
+    note: 'Deep low-end reinforcement that adds punch to dance floors and live events.',
+    image: buildProductArtwork({
+      title: 'Bass',
+      subtitle: 'Unit',
+      gradient: ['#111827', '#7c3aed'],
+      glow: '#c4b5fd',
+    }),
+  },
+  {
+    id: 'dj-mixer-controller',
+    name: 'DJ Mixer Controller',
+    tag: 'Audio equipment',
+    price: 3500,
+    discount: 0,
+    note: 'Hands-on mixing control for smooth transitions, cueing, and live performance.',
+    image: buildProductArtwork({
+      title: 'DJ',
+      subtitle: 'Mixer',
+      gradient: ['#0f172a', '#0ea5e9'],
+      glow: '#7dd3fc',
+    }),
+  },
+  {
+    id: 'wireless-microphone',
+    name: 'Wireless Microphone',
+    tag: 'Audio equipment',
+    price: 1200,
+    discount: 0,
+    note: 'Reliable wireless vocal mic for announcements, hosting, and stage use.',
+    image: buildProductArtwork({
+      title: 'Wireless',
+      subtitle: 'Mic',
+      gradient: ['#111827', '#14b8a6'],
+      glow: '#5eead4',
+    }),
+  },
+  {
+    id: 'dj-headphones',
+    name: 'DJ Headphones',
+    tag: 'Audio equipment',
+    price: 800,
+    discount: 0,
+    note: 'Closed-back monitoring headphones for cueing and booth monitoring.',
+    image: buildProductArtwork({
+      title: 'DJ',
+      subtitle: 'Headphones',
+      gradient: ['#0f172a', '#475569'],
+      glow: '#cbd5e1',
+    }),
+  },
+  {
+    id: 'par-lights-set-4',
+    name: 'PAR Lights (Set of 4)',
+    tag: 'Lighting equipment',
+    price: 3200,
+    discount: 0,
+    note: 'Compact wash lighting for stage color, ambience, and backdrop accents.',
+    image: buildProductArtwork({
+      title: 'PAR',
+      subtitle: 'Set',
+      gradient: ['#172554', '#f59e0b'],
+      glow: '#fde68a',
+    }),
+  },
+  {
+    id: 'moving-head-lights-pair',
+    name: 'Moving Head Lights (Pair)',
+    tag: 'Lighting equipment',
+    price: 10500,
+    discount: 0,
+    note: 'Motorized fixtures for sweeping beams, motion effects, and dynamic shows.',
+    image: buildProductArtwork({
+      title: 'Moving',
+      subtitle: 'Heads',
+      gradient: ['#0f172a', '#14b8a6'],
+      glow: '#99f6e4',
+    }),
+  },
+  {
+    id: 'laser-lights-rental',
+    name: 'Laser Lights',
+    tag: 'Lighting equipment',
+    price: 6500,
+    discount: 0,
+    note: 'Sharp beam patterns that create instant club-style energy in the room.',
+    image: buildProductArtwork({
+      title: 'Laser',
+      subtitle: 'FX',
+      gradient: ['#08111f', '#ec4899'],
+      glow: '#67e8f9',
+    }),
+  },
+  {
+    id: 'strobe-lights-rental',
+    name: 'Strobe Lights',
+    tag: 'Lighting equipment',
+    price: 3800,
+    discount: 0,
+    note: 'Fast flash bursts for drop hits, hype moments, and performance cues.',
+    image: buildProductArtwork({
+      title: 'Strobe',
+      subtitle: 'Flash',
+      gradient: ['#111827', '#f97316'],
+      glow: '#fde68a',
+    }),
+  },
+  {
+    id: 'led-bar-lights',
+    name: 'LED Bar Lights',
+    tag: 'Lighting equipment',
+    price: 5500,
+    discount: 0,
+    note: 'Linear light bars for stage edges, truss lines, and background washes.',
+    image: buildProductArtwork({
+      title: 'LED',
+      subtitle: 'Bar',
+      gradient: ['#1f2937', '#8b5cf6'],
+      glow: '#f0abfc',
+    }),
+  },
+  {
+    id: 'smoke-fog-machine-rental',
+    name: 'Smoke / Fog Machine',
+    tag: 'Effects',
+    price: 7500,
+    discount: 0,
+    note: 'Atmospheric haze for reveal shots, lighting beams, and dance-floor drama.',
+    image: buildProductArtwork({
+      title: 'Fog',
+      subtitle: 'Machine',
+      gradient: ['#101a34', '#3b82f6'],
+      glow: '#a5f3fc',
+    }),
+  },
+  {
+    id: 'snow-machine',
+    name: 'Snow Machine',
+    tag: 'Effects',
+    price: 9000,
+    discount: 0,
+    note: 'Snowfall-style effect for festive moments, stage reveals, and special themes.',
+    image: buildProductArtwork({
+      title: 'Snow',
+      subtitle: 'FX',
+      gradient: ['#0f172a', '#38bdf8'],
+      glow: '#e0f2fe',
+    }),
+  },
+  {
+    id: 'cold-pyro-machine',
+    name: 'Cold Pyro Machine (Sparkular)',
+    tag: 'Effects',
+    price: 12000,
+    discount: 0,
+    note: 'Indoor-safe spark effect for high-impact entrances, intros, and finales.',
+    image: buildProductArtwork({
+      title: 'Cold',
+      subtitle: 'Pyro',
+      gradient: ['#111827', '#f43f5e'],
+      glow: '#fda4af',
+    }),
+  },
+  {
+    id: 'truss-structure',
+    name: 'Truss Structure (10-20 ft)',
+    tag: 'Stage & setup',
+    price: 8000,
+    discount: 0,
+    note: 'Load-bearing truss framework for lights, banners, and stage dressing.',
+    image: buildProductArtwork({
+      title: 'Truss',
+      subtitle: 'Frame',
+      gradient: ['#111827', '#64748b'],
+      glow: '#cbd5e1',
+    }),
+  },
+  {
+    id: 'dj-booth-table',
+    name: 'DJ Booth Table',
+    tag: 'Stage & setup',
+    price: 2000,
+    discount: 0,
+    note: 'Clean presentation table for the DJ console, laptops, and controller setup.',
+    image: buildProductArtwork({
+      title: 'DJ',
+      subtitle: 'Booth',
+      gradient: ['#1e293b', '#0f766e'],
+      glow: '#99f6e4',
+    }),
+  },
+  {
+    id: 'led-wall-panel',
+    name: 'LED Wall Panel',
+    tag: 'Stage & setup',
+    price: 15000,
+    discount: 0,
+    note: 'Per-panel display module for video backdrops, branding, and visual walls.',
+    image: buildProductArtwork({
+      title: 'LED',
+      subtitle: 'Panel',
+      gradient: ['#020617', '#22c55e'],
+      glow: '#86efac',
+    }),
+  },
+  {
+    id: 'stage-platform',
+    name: 'Stage Platform',
+    tag: 'Stage & setup',
+    price: 6000,
+    discount: 0,
+    note: 'Modular raised platform for performer visibility, speeches, and show layout.',
+    image: buildProductArtwork({
+      title: 'Stage',
+      subtitle: 'Platform',
+      gradient: ['#172554', '#f97316'],
+      glow: '#fdba74',
+    }),
+  },
+  {
+    id: 'power-generator',
+    name: 'Power Generator (Backup)',
+    tag: 'Utilities',
+    price: 5000,
+    discount: 0,
+    note: 'Reliable backup power to keep sound and lighting running during outages.',
+    image: buildProductArtwork({
+      title: 'Power',
+      subtitle: 'Backup',
+      gradient: ['#111827', '#facc15'],
+      glow: '#fef08a',
+    }),
+  },
+  {
+    id: 'cables-wiring-setup',
+    name: 'Cables & Wiring Setup',
+    tag: 'Utilities',
+    price: 1500,
+    discount: 0,
+    note: 'Complete cabling and wiring support for a clean, organized event setup.',
+    image: buildProductArtwork({
+      title: 'Cables',
+      subtitle: 'Setup',
+      gradient: ['#0f172a', '#7c3aed'],
+      glow: '#ddd6fe',
+    }),
+  },
+  {
+    id: 'dmx-controller',
+    name: 'DMX Controller',
+    tag: 'Utilities',
+    price: 2500,
+    discount: 0,
+    note: 'Light-control controller for synchronized scenes, cues, and transitions.',
+    image: buildProductArtwork({
+      title: 'DMX',
+      subtitle: 'Control',
+      gradient: ['#0f172a', '#06b6d4'],
+      glow: '#67e8f9',
+    }),
+  },
 ]
+
+const comboPacks = [
+  {
+    id: 'basic-party-pack',
+    name: 'Basic Party Pack',
+    tag: 'Combo package',
+    price: 9999,
+    discount: 0,
+    note: 'Speakers + PAR Lights + Mic. A lean starter pack for private parties and house events.',
+    components: [
+      { label: 'DJ Speakers (Pair)', quantity: 1 },
+      { label: 'PAR Lights (Set of 4)', quantity: 1 },
+      { label: 'Wireless Microphone', quantity: 1 },
+    ],
+    image: buildProductArtwork({
+      title: 'Basic',
+      subtitle: 'Pack',
+      gradient: ['#0f172a', '#22c55e'],
+      glow: '#86efac',
+    }),
+  },
+  {
+    id: 'club-pack',
+    name: 'Club Pack',
+    tag: 'Combo package',
+    price: 19999,
+    discount: 0,
+    note: 'Speakers + Moving Head + Laser + Fog. Built for high-energy club and stage nights.',
+    components: [
+      { label: 'DJ Speakers (Pair)', quantity: 1 },
+      { label: 'Moving Head Lights (Pair)', quantity: 1 },
+      { label: 'Laser Lights', quantity: 1 },
+      { label: 'Smoke / Fog Machine', quantity: 1 },
+    ],
+    image: buildProductArtwork({
+      title: 'Club',
+      subtitle: 'Pack',
+      gradient: ['#111827', '#ec4899'],
+      glow: '#f9a8d4',
+    }),
+  },
+  {
+    id: 'premium-wedding-pack',
+    name: 'Premium Wedding Pack',
+    tag: 'Combo package',
+    price: 39999,
+    discount: 0,
+    note: 'Full setup + LED wall + pyro + truss. The complete showpiece package for big weddings.',
+    components: [
+      { label: 'DJ Speakers (Pair)', quantity: 2 },
+      { label: 'Moving Head Lights (Pair)', quantity: 2 },
+      { label: 'LED Wall Panel', quantity: 4 },
+      { label: 'Cold Pyro Machine (Sparkular)', quantity: 1 },
+      { label: 'Truss Structure (10-20 ft)', quantity: 1 },
+    ],
+    image: buildProductArtwork({
+      title: 'Premium',
+      subtitle: 'Wedding',
+      gradient: ['#0f172a', '#f59e0b'],
+      glow: '#fde68a',
+    }),
+  },
+]
+
+const allProducts = [...products, ...comboPacks]
 
 function buildProductArtwork({ title, subtitle, gradient, glow }) {
   const [startColor, endColor] = gradient
@@ -153,6 +499,10 @@ const formatCurrency = (value) =>
   }).format(value)
 
 const getViewFromHash = () => {
+  if (window.location.hash === '#combos') {
+    return 'combos'
+  }
+
   if (window.location.hash === '#checkout') {
     return 'checkout'
   }
@@ -172,10 +522,7 @@ function App() {
       return null
     }
   })
-  const [cart, setCart] = useState({
-    'smoke-fog-machine': 1,
-    'moving-head-lights': 1,
-  })
+  const [cart, setCart] = useState({})
   const [selectedDuration, setSelectedDuration] = useState(durations[4])
   const [searchQuery, setSearchQuery] = useState('')
   const [view, setView] = useState(() => getViewFromHash())
@@ -191,6 +538,14 @@ function App() {
   const saveSession = (user) => {
     setAuthUser(user)
     localStorage.setItem(SESSION_STORAGE_KEY, JSON.stringify(user))
+  }
+
+  const openCatalogPage = () => {
+    window.location.hash = ''
+  }
+
+  const openComboPage = () => {
+    window.location.hash = 'combos'
   }
 
   const handleSignup = ({ name, email, password }) => {
@@ -233,7 +588,7 @@ function App() {
   }, [])
 
   const cartItems = useMemo(() => {
-    return products
+    return allProducts
       .map((product) => {
         const quantity = cart[product.id] || 0
         const discountedPrice = Math.round(product.price * (1 - product.discount / 100))
@@ -339,6 +694,19 @@ function App() {
     )
   }
 
+  if (view === 'combos') {
+    return (
+      <ComboPage
+        comboPacks={comboPacks}
+        cart={cart}
+        formatCurrency={formatCurrency}
+        updateQuantity={updateQuantity}
+        onBack={openCatalogPage}
+        onProceed={openCheckoutPage}
+      />
+    )
+  }
+
   if (view === 'payment') {
     return <PaymentPage amount={grandTotal} onBack={returnToCheckout} />
   }
@@ -355,6 +723,9 @@ function App() {
         </div>
 
         <div className="topbar-actions">
+          <button type="button" className="logout-button" onClick={openComboPage}>
+            Combo packs
+          </button>
           <button type="button" className="logout-button" onClick={handleLogout}>
             Logout
           </button>
@@ -362,8 +733,8 @@ function App() {
           <label className="searchbar" aria-label="Search DJ equipment">
             <span className="search-icon">Search</span>
             <input
-              type="search"
-              placeholder="Search lights, fog, and show effects"
+                type="search"
+                placeholder="Search audio, lighting, effects, and packs"
               value={searchQuery}
               onChange={(event) => setSearchQuery(event.target.value)}
               aria-label="Search products"
@@ -383,8 +754,8 @@ function App() {
 
           <div className="hero-stats">
             <div>
-              <strong>6</strong>
-              <span>core lighting effects</span>
+              <strong>20+</strong>
+              <span>rental options</span>
             </div>
             <div>
               <strong>10</strong>
@@ -404,17 +775,54 @@ function App() {
             Equipment total {formatCurrency(equipmentTotal)} before the chosen rental duration is
             applied.
           </p>
+          <button type="button" className="checkout-button" onClick={openComboPage}>
+            Browse combo packs
+          </button>
         </aside>
+      </section>
+
+      <section className="combo-overview">
+        <div className="section-head">
+          <div>
+            <h3>Combo packs at a glance</h3>
+            <p>See the ready-made packages and exactly what each one includes.</p>
+          </div>
+          <span className="section-chip">3 curated packages</span>
+        </div>
+
+        <div className="combo-overview-grid">
+          {comboPacks.map((pack) => (
+            <SpotlightCard key={pack.id} className="combo-overview-card">
+              <div className="product-topline">
+                <span className="tag">{pack.tag}</span>
+                <span className="discount">{formatCurrency(pack.price)}</span>
+              </div>
+              <h4>{pack.name}</h4>
+              <p>{pack.note}</p>
+              <div className="combo-components">
+                <span>Included components</span>
+                <ul>
+                  {pack.components.map((component) => (
+                    <li key={component.label}>
+                      <strong>{component.quantity}x</strong>
+                      <span>{component.label}</span>
+                    </li>
+                  ))}
+                </ul>
+              </div>
+            </SpotlightCard>
+          ))}
+        </div>
       </section>
 
       <main className="layout">
         <section className="catalog">
           <div className="section-head">
             <div>
-              <h3>DJ Setup Components</h3>
-              <p>Reasonable rental pricing with the sale price shown first.</p>
+              <h3>Audio, Lighting, Effects & Packs</h3>
+              <p>Full event inventory with exact pack prices and fixed-rate rentals.</p>
             </div>
-            <span className="section-chip">Minimum 10% off each</span>
+            <span className="section-chip">20+ items ready to book</span>
           </div>
 
           <div className="product-grid">
@@ -427,7 +835,11 @@ function App() {
                 <SpotlightCard key={product.id} className="product-card">
                   <div className="product-topline">
                     <span className="tag">{product.tag}</span>
-                    <span className="discount">{product.discount}% off</span>
+                    {product.discount > 0 ? (
+                      <span className="discount">{product.discount}% off</span>
+                    ) : (
+                      <span className="discount">Flat rate</span>
+                    )}
                   </div>
                   <div className="product-image-frame">
                     <img
@@ -441,7 +853,7 @@ function App() {
                   <p>{product.note}</p>
                   <div className="price-row">
                     <strong>{formatCurrency(discountedPrice)}</strong>
-                    <span className="strike">{formatCurrency(product.price)}</span>
+                    {product.discount > 0 ? <span className="strike">{formatCurrency(product.price)}</span> : null}
                   </div>
                   <div className="quantity-row">
                     <button type="button" onClick={() => updateQuantity(product.id, -1)}>

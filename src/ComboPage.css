@@ -1,0 +1,123 @@
+.combo-page-layout {
+  display: grid;
+  grid-template-columns: minmax(0, 1.35fr) minmax(300px, 0.75fr);
+  gap: 18px;
+  margin-top: 18px;
+}
+
+.combo-page-panel,
+.combo-summary-column {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.combo-page-actions {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  flex-wrap: wrap;
+}
+
+.combo-grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 16px;
+}
+
+.combo-select-card,
+.combo-summary-card {
+  padding: 18px;
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+}
+
+.combo-summary-text {
+  color: #a8b5d3;
+  margin: 0;
+}
+
+.combo-components {
+  padding: 14px;
+  border-radius: 18px;
+  background: rgba(255, 255, 255, 0.04);
+}
+
+.combo-components > span {
+  display: block;
+  margin-bottom: 10px;
+  font-size: 12px;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: rgba(229, 236, 255, 0.72);
+}
+
+.combo-components ul {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: grid;
+  gap: 8px;
+}
+
+.combo-components li {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  color: #eef2ff;
+}
+
+.combo-components li strong {
+  color: #ffd84d;
+}
+
+.combo-components li span {
+  color: #cbd5e1;
+}
+
+.combo-summary-list {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: grid;
+  gap: 10px;
+}
+
+.combo-summary-list li {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  padding: 12px 14px;
+  border-radius: 16px;
+  background: rgba(255, 255, 255, 0.04);
+  color: #eef2ff;
+}
+
+.combo-summary-list li div {
+  display: grid;
+  gap: 4px;
+}
+
+.combo-summary-list li small {
+  color: #a8b5d3;
+}
+
+.combo-empty {
+  justify-content: center;
+  color: #a8b5d3;
+}
+
+@media (max-width: 1080px) {
+  .combo-page-layout {
+    grid-template-columns: 1fr;
+  }
+}
+
+@media (max-width: 720px) {
+  .combo-grid {
+    grid-template-columns: 1fr;
+  }
+}

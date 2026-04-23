@@ -1,4 +1,5 @@
-import { useMemo, useState } from 'react'
+import { useMemo, useRef, useState } from 'react'
+import LineWaves from './LineWaves'
 import './AuthPage.css'
 
 const defaultSignupForm = {
@@ -17,6 +18,7 @@ function AuthPage({ onLogin, onSignup }) {
   const [signupForm, setSignupForm] = useState(defaultSignupForm)
   const [loginForm, setLoginForm] = useState(defaultLoginForm)
   const [error, setError] = useState('')
+  const cardRef = useRef(null)
 
   const title = useMemo(() => {
     return mode === 'login' ? 'Welcome back' : 'Create your StageKart account'
@@ -57,9 +59,61 @@ function AuthPage({ onLogin, onSignup }) {
     }
   }
 
+  const updateCardGlow = (event) => {
+    const card = cardRef.current
+
+    if (!card) {
+      return
+    }
+
+    const bounds = card.getBoundingClientRect()
+    const x = ((event.clientX - bounds.left) / bounds.width) * 100
+    const y = ((event.clientY - bounds.top) / bounds.height) * 100
+
+    card.style.setProperty('--glow-x', `${Math.max(0, Math.min(100, x))}%`)
+    card.style.setProperty('--glow-y', `${Math.max(0, Math.min(100, y))}%`)
+    card.style.setProperty('--glow-tilt-x', `${(x - 50) / 12}deg`)
+    card.style.setProperty('--glow-tilt-y', `${(50 - y) / 12}deg`)
+  }
+
+  const resetCardGlow = () => {
+    const card = cardRef.current
+
+    if (!card) {
+      return
+    }
+
+    card.style.setProperty('--glow-x', '50%')
+    card.style.setProperty('--glow-y', '30%')
+    card.style.setProperty('--glow-tilt-x', '0deg')
+    card.style.setProperty('--glow-tilt-y', '0deg')
+  }
+
   return (
     <main className="auth-shell">
-      <section className="auth-card">
+      <div className="auth-background" aria-hidden="true">
+        <LineWaves
+          speed={0.22}
+          innerLineCount={14}
+          outerLineCount={18}
+          warpIntensity={0.9}
+          rotation={-32}
+          edgeFadeWidth={72}
+          colorCycleSpeed={0.7}
+          brightness={0.45}
+          color1="#7dd3fc"
+          color2="#ffffff"
+          color3="#fde047"
+          enableMouseInteraction
+          mouseInfluence={1.4}
+        />
+      </div>
+      <section
+        ref={cardRef}
+        className="auth-card"
+        onPointerMove={updateCardGlow}
+        onPointerLeave={resetCardGlow}
+      >
         <div className="auth-hero">
           <p className="eyebrow">StageKart access</p>
           <h1>{title}</h1>

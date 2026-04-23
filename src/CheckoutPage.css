@@ -11,6 +11,23 @@
   gap: 16px;
 }
 
+.combo-head {
+  margin-top: 8px;
+}
+
+.combo-grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 16px;
+}
+
+.combo-card {
+  padding: 18px;
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+}
+
 .back-button {
   border: 0;
   border-radius: 14px;
@@ -24,6 +41,12 @@
 
 @media (max-width: 1080px) {
   .checkout-page-layout {
+    grid-template-columns: 1fr;
+  }
+}
+
+@media (max-width: 720px) {
+  .combo-grid {
     grid-template-columns: 1fr;
   }
 }

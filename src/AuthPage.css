@@ -1,18 +1,108 @@
 .auth-shell {
-  min-height: 100vh;
+  position: relative;
+  min-height: 100svh;
   display: grid;
   place-items: center;
   padding: 24px;
+  overflow: hidden;
+}
+
+.auth-background {
+  position: fixed;
+  inset: 0;
+  display: grid;
+  place-items: center;
+  pointer-events: none;
+  opacity: 0.78;
+}
+
+.auth-background::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background:
+    radial-gradient(circle at top left, rgba(64, 122, 255, 0.18), transparent 32%),
+    radial-gradient(circle at 80% 20%, rgba(255, 216, 77, 0.12), transparent 28%),
+    radial-gradient(circle at bottom center, rgba(8, 12, 24, 0.2), transparent 55%);
+}
+
+.line-waves {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  width: 140vmax;
+  height: 140vmax;
+  transform-origin: center;
+}
+
+.line-waves svg {
+  width: 100%;
+  height: 100%;
+  display: block;
 }
 
 .auth-card {
+  position: relative;
+  z-index: 1;
+  isolation: isolate;
+  --glow-x: 50%;
+  --glow-y: 30%;
+  --glow-tilt-x: 0deg;
+  --glow-tilt-y: 0deg;
   width: min(100%, 520px);
   padding: 32px;
   border-radius: 28px;
-  border: 1px solid rgba(138, 160, 255, 0.16);
-  background: rgba(9, 13, 28, 0.86);
-  box-shadow: 0 24px 70px rgba(0, 0, 0, 0.38);
-  backdrop-filter: blur(18px);
+  border: 1px solid rgba(255, 255, 255, 0.14);
+  background:
+    linear-gradient(135deg, rgba(255, 255, 255, 0.1), rgba(255, 255, 255, 0.02)),
+    rgba(9, 13, 28, 0.32);
+  box-shadow:
+    0 24px 70px rgba(0, 0, 0, 0.28),
+    inset 0 1px 0 rgba(255, 255, 255, 0.14),
+    inset 0 0 0 1px rgba(125, 211, 252, 0.05);
+  backdrop-filter: blur(28px) saturate(160%);
+  -webkit-backdrop-filter: blur(28px) saturate(160%);
+  transform: perspective(1200px) rotateX(var(--glow-tilt-y)) rotateY(var(--glow-tilt-x));
+  transition:
+    transform 180ms ease,
+    box-shadow 180ms ease,
+    border-color 180ms ease;
+}
+
+.auth-card::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  border-radius: inherit;
+  background:
+    linear-gradient(
+      135deg,
+      rgba(255, 255, 255, 0.28) 0%,
+      rgba(255, 255, 255, 0.08) 18%,
+      transparent 38%
+    ),
+    radial-gradient(
+      circle at var(--glow-x) var(--glow-y),
+      rgba(255, 255, 255, 0.14),
+      rgba(255, 255, 255, 0.05) 24%,
+      transparent 58%
+    ),
+    radial-gradient(circle at top left, rgba(255, 255, 255, 0.1), transparent 34%),
+    radial-gradient(circle at bottom right, rgba(125, 211, 252, 0.08), transparent 38%);
+  pointer-events: none;
+  z-index: -1;
+}
+
+.auth-card::after {
+  content: '';
+  position: absolute;
+  inset: 1px;
+  border-radius: calc(28px - 1px);
+  background:
+    radial-gradient(circle at var(--glow-x) var(--glow-y), rgba(255, 255, 255, 0.08), transparent 34%),
+    linear-gradient(180deg, rgba(255, 255, 255, 0.06), transparent 22%);
+  pointer-events: none;
+  z-index: -1;
 }
 
 .auth-hero h1 {
@@ -101,5 +191,10 @@
 @media (max-width: 520px) {
   .auth-card {
     padding: 24px 18px;
+  }
+
+  .line-waves {
+    width: 160vmax;
+    height: 160vmax;
   }
 }
