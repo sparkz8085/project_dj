@@ -26,7 +26,17 @@ function AuthPage({ onLogin, onSignup }) {
   const [shaking, setShaking] = useState(false)
   const [showLoginPassword, setShowLoginPassword] = useState(false)
   const [showSignupPassword, setShowSignupPassword] = useState(false)
+  const [isMobile, setIsMobile] = useState(window.innerWidth < 768)
   const cardRef = useRef(null)
+
+  // Detect mobile device
+  useEffect(() => {
+    const handleResize = () => {
+      setIsMobile(window.innerWidth < 768)
+    }
+    window.addEventListener('resize', handleResize)
+    return () => window.removeEventListener('resize', handleResize)
+  }, [])
 
   const title = useMemo(() => {
     if (mode === 'login') return 'Welcome back'
@@ -100,11 +110,10 @@ function AuthPage({ onLogin, onSignup }) {
   }
 
   const updateCardGlow = (event) => {
+    if (isMobile) return // Disable on mobile for performance
+    
     const card = cardRef.current
-
-    if (!card) {
-      return
-    }
+    if (!card) return
 
     const bounds = card.getBoundingClientRect()
     const x = ((event.clientX - bounds.left) / bounds.width) * 100
@@ -117,11 +126,10 @@ function AuthPage({ onLogin, onSignup }) {
   }
 
   const resetCardGlow = () => {
+    if (isMobile) return // Disable on mobile for performance
+    
     const card = cardRef.current
-
-    if (!card) {
-      return
-    }
+    if (!card) return
 
     card.style.setProperty('--glow-x', '50%')
     card.style.setProperty('--glow-y', '30%')

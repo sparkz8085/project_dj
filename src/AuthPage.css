@@ -45,6 +45,7 @@
   position: relative;
   z-index: 1;
   isolation: isolate;
+  contain: paint;
   --glow-x: 50%;
   --glow-y: 30%;
   --glow-tilt-x: 0deg;
@@ -67,6 +68,7 @@
     transform 180ms ease,
     box-shadow 180ms ease,
     border-color 180ms ease;
+  will-change: transform;
 }
 
 .auth-card::before {
@@ -331,13 +333,183 @@
   animation: shake 0.6s cubic-bezier(0.36, 0.07, 0.19, 0.97) both;
 }
 
-@media (max-width: 520px) {
+@media (max-width: 768px) {
   .auth-card {
     padding: 24px 18px;
+    border-radius: 20px;
+    backdrop-filter: blur(12px) saturate(120%);
+    -webkit-backdrop-filter: blur(12px) saturate(120%);
+    box-shadow:
+      0 12px 40px rgba(0, 0, 0, 0.3),
+      inset 0 1px 0 rgba(255, 255, 255, 0.12);
+  }
+
+  .auth-card::before {
+    background:
+      linear-gradient(
+        135deg,
+        rgba(255, 255, 255, 0.18) 0%,
+        rgba(255, 255, 255, 0.05) 20%,
+        transparent 45%
+      ),
+      radial-gradient(circle at var(--glow-x) var(--glow-y), rgba(255, 255, 255, 0.08), transparent 40%);
+  }
+
+  .auth-card::after {
+    background: radial-gradient(circle at var(--glow-x) var(--glow-y), rgba(255, 255, 255, 0.05), transparent 40%);
+  }
+
+  .auth-card.error {
+    box-shadow:
+      0 12px 40px rgba(0, 0, 0, 0.3),
+      inset 0 1px 0 rgba(255, 107, 107, 0.25);
+  }
+
+  .auth-background::before {
+    background:
+      radial-gradient(circle at top left, rgba(64, 122, 255, 0.1), transparent 40%),
+      radial-gradient(circle at 80% 20%, rgba(255, 216, 77, 0.08), transparent 35%);
+    opacity: 0.5;
   }
 
   .line-waves {
-    width: 160vmax;
-    height: 160vmax;
+    opacity: 0.4;
+    width: 180vmax;
+    height: 180vmax;
+  }
+
+  .auth-hero h1 {
+    font-size: clamp(24px, 6vw, 32px);
+  }
+
+  .auth-tabs {
+    gap: 8px;
+    padding: 5px;
+  }
+
+  .auth-tabs button {
+    padding: 12px 14px;
+    font-size: 13px;
+  }
+
+  .auth-form {
+    gap: 12px;
+  }
+
+  .auth-form label {
+    gap: 6px;
+  }
+
+  .auth-form span {
+    font-size: 13px;
+  }
+
+  .auth-form input {
+    padding: 12px 14px;
+    font-size: 16px;
+  }
+
+  .auth-button,
+  .gmail-button {
+    padding: 12px 14px;
+    font-size: 15px;
+    margin-top: 6px;
+  }
+
+  .gmail-button {
+    gap: 8px;
+  }
+
+  .gmail-icon {
+    width: 18px;
+    height: 18px;
+  }
+
+  .password-toggle {
+    right: 10px;
+    padding: 4px;
+  }
+
+  .password-toggle svg {
+    width: 18px;
+    height: 18px;
+  }
+
+  .password-input-wrapper input {
+    padding-right: 40px;
+  }
+
+  .auth-divider {
+    margin: 12px 0;
+    font-size: 12px;
+  }
+
+  .forgot-subtitle {
+    font-size: 13px;
+    margin-bottom: 12px;
+  }
+}
+
+@media (max-width: 520px) {
+  .auth-card {
+    padding: 20px 16px;
+    border-radius: 18px;
+  }
+
+  .line-waves {
+    width: 200vmax;
+    height: 200vmax;
+    opacity: 0.3;
+  }
+
+  .auth-hero h1 {
+    font-size: clamp(22px, 5vw, 28px);
+    margin-top: 8px;
+  }
+
+  .auth-hero p {
+    font-size: 13px;
+  }
+
+  .auth-tabs button {
+    padding: 10px 12px;
+    font-size: 12px;
+    border-radius: 12px;
+  }
+
+  .auth-form {
+    gap: 10px;
+  }
+
+  .auth-form input {
+    border-radius: 12px;
+    padding: 11px 12px;
+    font-size: 16px;
+  }
+
+  .auth-button,
+  .gmail-button {
+    padding: 11px 12px;
+    font-size: 14px;
+    border-radius: 12px;
+  }
+
+  .gmail-button svg {
+    display: none;
+  }
+
+  .password-input-wrapper input {
+    padding-right: 38px;
+  }
+
+  .password-toggle svg {
+    width: 16px;
+    height: 16px;
+  }
+
+  .auth-error {
+    font-size: 12px;
+    padding: 10px 12px;
+    border-radius: 12px;
   }
 }
