@@ -29,6 +29,8 @@ function AuthPage({ onLogin, onSignup }) {
   const [showLoginPassword, setShowLoginPassword] = useState(false)
   const [showSignupPassword, setShowSignupPassword] = useState(false)
   const cardRef = useRef(null)
+  const shakeStartTimerRef = useRef(null)
+  const shakeEndTimerRef = useRef(null)
   
   // Device optimization hook
   const { preset, specs, isReady } = useDeviceOptimization()
@@ -44,14 +46,30 @@ function AuthPage({ onLogin, onSignup }) {
     return 'Create your StageKart account'
   }, [mode])
 
-  // Trigger shake animation when error occurs
+  const showInvalidState = (message) => {
+    setError(message)
+    setShaking(false)
+
+    window.clearTimeout(shakeStartTimerRef.current)
+    window.clearTimeout(shakeEndTimerRef.current)
+
+    shakeStartTimerRef.current = window.setTimeout(() => setShaking(true), 0)
+    shakeEndTimerRef.current = window.setTimeout(() => setShaking(false), animationDuration)
+  }
+
+  const clearInvalidState = () => {
+    setError('')
+    setShaking(false)
+    window.clearTimeout(shakeStartTimerRef.current)
+    window.clearTimeout(shakeEndTimerRef.current)
+  }
+
   useEffect(() => {
-    if (error) {
-      setShaking(true)
-      const timer = setTimeout(() => setShaking(false), animationDuration * 0.6)
-      return () => clearTimeout(timer)
+    return () => {
+      window.clearTimeout(shakeStartTimerRef.current)
+      window.clearTimeout(shakeEndTimerRef.current)
     }
-  }, [error, animationDuration])
+  }, [])
 
   const handleSignupSubmit = (event) => {
     event.preventDefault()
@@ -61,12 +79,44 @@ function AuthPage({ onLogin, onSignup }) {
     const email = signupForm.email.trim().toLowerCase()
     const password = signupForm.password.trim()
 
-    if (!name || !email || !password) {
-      setError('Please fill in all signup fields.')
+    // Validation checks
+    if (!name) {
+      showInvalidState('Please enter your full name.')
+      return
+    }
+    
+    if (name.length < 2) {
+      showInvalidState('Name must be at least 2 characters long.')
       return
     }
 
-    onSignup({ name, email, password })
+    if (!email) {
+      showInvalidState('Please enter your email address.')
+      return
+    }
+
+    // Email format validation
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/
+    if (!emailRegex.test(email)) {
+      showInvalidState('Please enter a valid email address.')
+      return
+    }
+
+    if (!password) {
+      showInvalidState('Please create a password.')
+      return
+    }
+
+    if (password.length < 6) {
+      showInvalidState('Password must be at least 6 characters long.')
+      return
+    }
+
+    const result = onSignup({ name, email, password })
+
+    if (!result?.ok) {
+      showInvalidState(result?.message || 'Unable to create account.')
+    }
   }
 
   const handleLoginSubmit = (event) => {
@@ -76,15 +126,33 @@ function AuthPage({ onLogin, onSignup }) {
     const email = loginForm.email.trim().toLowerCase()
     const password = loginForm.password.trim()
 
-    if (!email || !password) {
-      setError('Please enter your email and password.')
+    // Validation checks
+    if (!email) {
+      showInvalidState('Please enter your email address.')
+      return
+    }
+
+    // Email format validation
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/
+    if (!emailRegex.test(email)) {
+      showInvalidState('Please enter a valid email address.')
+      return
+    }
+
+    if (!password) {
+      showInvalidState('Please enter your password.')
+      return
+    }
+
+    if (password.length < 6) {
+      showInvalidState('Password must be at least 6 characters long.')
       return
     }
 
     const result = onLogin({ email, password })
 
     if (!result?.ok) {
-      setError(result?.message || 'Invalid credentials.')
+      showInvalidState(result?.message || 'Invalid credentials.')
     }
   }
 
@@ -94,8 +162,16 @@ function AuthPage({ onLogin, onSignup }) {
 
     const email = forgotPasswordForm.email.trim().toLowerCase()
 
+    // Validation checks
     if (!email) {
-      setError('Please enter your email address.')
+      showInvalidState('Please enter your email address.')
+      return
+    }
+
+    // Email format validation
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/
+    if (!emailRegex.test(email)) {
+      showInvalidState('Please enter a valid email address.')
       return
     }
 
@@ -181,8 +257,6 @@ function AuthPage({ onLogin, onSignup }) {
           preset && isReady
             ? {
                 '--backdrop-blur': `${preset.cardEffects.backdropBlur}px`,
-                '--border-opacity': preset.cardEffects.borderOpacity,
-                '--shadow-opacity': preset.cardEffects.shadowOpacity,
               }
             : {}
         }
@@ -205,7 +279,7 @@ function AuthPage({ onLogin, onSignup }) {
             className={mode === 'login' ? 'active' : ''}
             onClick={() => {
               setMode('login')
-              setError('')
+              clearInvalidState()
             }}
           >
             Login
@@ -215,7 +289,7 @@ function AuthPage({ onLogin, onSignup }) {
             className={mode === 'signup' ? 'active' : ''}
             onClick={() => {
               setMode('signup')
-              setError('')
+              clearInvalidState()
             }}
           >
             Signup
@@ -225,7 +299,7 @@ function AuthPage({ onLogin, onSignup }) {
             className={mode === 'forgot' ? 'active' : ''}
             onClick={() => {
               setMode('forgot')
-              setError('')
+              clearInvalidState()
             }}
           >
             Forgot Password

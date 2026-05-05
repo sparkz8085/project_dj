@@ -563,13 +563,13 @@ function App() {
     const existingUser = users.find((user) => user.email === email)
 
     if (existingUser) {
-      alert('An account with this email already exists. Please login instead.')
-      return
+      return { ok: false, message: 'An account with this email already exists. Please login instead.' }
     }
 
     const newUser = { name, email, password }
     localStorage.setItem(USERS_STORAGE_KEY, JSON.stringify([...users, newUser]))
     saveSession({ name, email })
+    return { ok: true }
   }
 
   const handleLogin = ({ email, password }) => {

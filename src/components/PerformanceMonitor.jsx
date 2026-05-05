@@ -7,10 +7,6 @@ export default function PerformanceMonitor({ preset, specs, isReady }) {
   const [isTouchDevice, setIsTouchDevice] = useState(false)
   const monitorRef = useRef(null)
 
-  if (!isReady || !preset || !specs) {
-    return null
-  }
-
   // Detect touch device
   useEffect(() => {
     const isTouchSupported = () => {
@@ -27,17 +23,24 @@ export default function PerformanceMonitor({ preset, specs, isReady }) {
 
   // Close monitor when clicking outside
   useEffect(() => {
+    if (!isOpen || !isTouchDevice) {
+      return
+    }
+
     const handleClickOutside = (event) => {
       if (monitorRef.current && !monitorRef.current.contains(event.target)) {
         setIsOpen(false)
       }
     }
 
-    if (isOpen && isTouchDevice) {
-      document.addEventListener('click', handleClickOutside)
-      return () => document.removeEventListener('click', handleClickOutside)
-    }
+    document.addEventListener('click', handleClickOutside)
+    return () => document.removeEventListener('click', handleClickOutside)
   }, [isOpen, isTouchDevice])
+
+  // Return early AFTER all hooks
+  if (!isReady || !preset || !specs) {
+    return null
+  }
 
   const handleToggle = () => {
     if (isTouchDevice) {

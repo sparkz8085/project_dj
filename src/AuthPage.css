@@ -45,7 +45,7 @@
   position: relative;
   z-index: 1;
   isolation: isolate;
-  contain: paint;
+  contain: layout style paint;
   --glow-x: 50%;
   --glow-y: 30%;
   --glow-tilt-x: 0deg;
@@ -56,22 +56,25 @@
   width: min(100%, 520px);
   padding: 32px;
   border-radius: 28px;
-  border: 1px solid rgba(255, 255, 255, calc(var(--border-opacity) * 1));
+  border: 1px solid rgba(255, 255, 255, 0.14);
   background:
     linear-gradient(135deg, rgba(255, 255, 255, 0.1), rgba(255, 255, 255, 0.02)),
     rgba(9, 13, 28, 0.32);
   box-shadow:
-    0 24px 70px rgba(0, 0, 0, calc(0.28 * var(--shadow-opacity))),
-    inset 0 1px 0 rgba(255, 255, 255, calc(var(--border-opacity) * 1)),
-    inset 0 0 0 1px rgba(125, 211, 252, calc(0.05 * var(--border-opacity)));
+    0 24px 70px rgba(0, 0, 0, 0.28),
+    inset 0 1px 0 rgba(255, 255, 255, 0.14),
+    inset 0 0 0 1px rgba(125, 211, 252, 0.05);
   backdrop-filter: blur(var(--backdrop-blur)) saturate(160%);
   -webkit-backdrop-filter: blur(var(--backdrop-blur)) saturate(160%);
   transform: perspective(1200px) rotateX(var(--glow-tilt-y)) rotateY(var(--glow-tilt-x));
   transition:
     transform 180ms ease,
     box-shadow 180ms ease,
-    border-color 180ms ease;
+    border-color 180ms ease,
+    background 180ms ease;
   will-change: transform;
+  overflow: visible;
+  min-height: auto;
 }
 
 .auth-card::before {
@@ -96,6 +99,7 @@
     radial-gradient(circle at bottom right, rgba(125, 211, 252, 0.08), transparent 38%);
   pointer-events: none;
   z-index: -1;
+  transition: background 180ms ease;
 }
 
 .auth-card::after {
@@ -108,6 +112,12 @@
     linear-gradient(180deg, rgba(255, 255, 255, 0.06), transparent 22%);
   pointer-events: none;
   z-index: -1;
+  transition: background 180ms ease;
+}
+
+.auth-hero {
+  display: block;
+  margin-bottom: 16px;
 }
 
 .auth-hero h1 {
@@ -121,6 +131,15 @@
 .auth-hero p {
   margin-top: 10px;
   color: #b7c3e2;
+}
+
+.eyebrow {
+  margin: 0;
+  font-size: 12px;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  color: #407aff;
 }
 
 .auth-tabs {
@@ -157,6 +176,7 @@
   margin-top: 16px;
   padding: 12px 14px;
   border-radius: 14px;
+  border: 1px solid rgba(248, 113, 113, 0.28);
   background: rgba(248, 113, 113, 0.12);
   color: #fecaca;
 }
@@ -392,45 +412,16 @@
   .auth-card {
     padding: 24px 18px;
     border-radius: 20px;
-    backdrop-filter: blur(12px) saturate(120%);
-    -webkit-backdrop-filter: blur(12px) saturate(120%);
-    box-shadow:
-      0 12px 40px rgba(0, 0, 0, 0.3),
-      inset 0 1px 0 rgba(255, 255, 255, 0.12);
   }
 
-  .auth-card::before {
-    background:
-      linear-gradient(
-        135deg,
-        rgba(255, 255, 255, 0.18) 0%,
-        rgba(255, 255, 255, 0.05) 20%,
-        transparent 45%
-      ),
-      radial-gradient(circle at var(--glow-x) var(--glow-y), rgba(255, 255, 255, 0.08), transparent 40%);
-  }
 
-  .auth-card::after {
-    background: radial-gradient(circle at var(--glow-x) var(--glow-y), rgba(255, 255, 255, 0.05), transparent 40%);
-  }
-
-  .auth-card.error {
-    box-shadow:
-      0 12px 40px rgba(0, 0, 0, 0.3),
-      inset 0 1px 0 rgba(255, 107, 107, 0.25);
-  }
 
   .auth-background::before {
-    background:
-      radial-gradient(circle at top left, rgba(64, 122, 255, 0.1), transparent 40%),
-      radial-gradient(circle at 80% 20%, rgba(255, 216, 77, 0.08), transparent 35%);
     opacity: 0.5;
   }
 
   .line-waves {
     opacity: 0.4;
-    width: 180vmax;
-    height: 180vmax;
   }
 
   .auth-hero h1 {
