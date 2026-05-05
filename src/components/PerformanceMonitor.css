@@ -1,0 +1,184 @@
+.performance-monitor {
+  position: fixed;
+  bottom: 20px;
+  right: 20px;
+  z-index: 9999;
+  font-family: 'Menlo', 'Courier New', monospace;
+  font-size: 12px;
+}
+
+.monitor-toggle {
+  width: 48px;
+  height: 48px;
+  border-radius: 50%;
+  background: linear-gradient(135deg, #407aff 0%, #1d4ed8 100%);
+  border: 2px solid rgba(255, 255, 255, 0.2);
+  color: #fff;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: all 0.3s ease;
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.2);
+}
+
+.monitor-toggle:hover {
+  transform: scale(1.05);
+  box-shadow: 0 12px 32px rgba(64, 122, 255, 0.3);
+}
+
+.monitor-toggle svg {
+  width: 24px;
+  height: 24px;
+}
+
+.performance-monitor:has(.monitor-content:hover) .monitor-toggle,
+.performance-monitor:hover .monitor-toggle {
+  transform: scale(0.9);
+}
+
+.monitor-content {
+  position: absolute;
+  bottom: 70px;
+  right: 0;
+  width: 300px;
+  background: rgba(9, 13, 28, 0.95);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: 12px;
+  padding: 16px;
+  backdrop-filter: blur(16px);
+  color: #f6f8ff;
+  box-shadow: 0 16px 48px rgba(0, 0, 0, 0.4);
+  max-height: 400px;
+  overflow-y: auto;
+  display: none;
+}
+
+.performance-monitor:hover .monitor-content {
+  display: block;
+}
+
+.monitor-content:hover {
+  display: block;
+}
+
+.monitor-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 12px;
+  padding-bottom: 8px;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.monitor-header h3 {
+  margin: 0;
+  font-size: 14px;
+  font-weight: 600;
+  color: #fff;
+}
+
+.preset-badge {
+  padding: 4px 10px;
+  border-radius: 8px;
+  color: #000;
+  font-weight: 600;
+  font-size: 11px;
+}
+
+.monitor-section {
+  margin-bottom: 12px;
+}
+
+.monitor-section h4 {
+  margin: 0 0 6px 0;
+  font-size: 12px;
+  font-weight: 600;
+  color: #a1aed6;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+.monitor-section ul {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+
+.monitor-section li {
+  display: flex;
+  justify-content: space-between;
+  padding: 4px 0;
+  color: #b7c3e2;
+  font-size: 11px;
+}
+
+.monitor-section li span {
+  font-weight: 500;
+  color: #8aa0ff;
+}
+
+.monitor-section li.alert {
+  color: #ff6b6b;
+}
+
+.monitor-section li.alert span {
+  color: #ff6b6b;
+}
+
+.monitor-footer {
+  margin-top: 8px;
+  padding-top: 8px;
+  border-top: 1px solid rgba(255, 255, 255, 0.05);
+  color: #6b7c99;
+  font-size: 10px;
+  text-align: center;
+}
+
+/* Scrollbar styling */
+.monitor-content::-webkit-scrollbar {
+  width: 6px;
+}
+
+.monitor-content::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+.monitor-content::-webkit-scrollbar-thumb {
+  background: rgba(255, 255, 255, 0.1);
+  border-radius: 3px;
+}
+
+.monitor-content::-webkit-scrollbar-thumb:hover {
+  background: rgba(255, 255, 255, 0.2);
+}
+
+@media (max-width: 520px) {
+  .performance-monitor {
+    bottom: 16px;
+    right: 16px;
+  }
+
+  .monitor-toggle {
+    width: 40px;
+    height: 40px;
+  }
+
+  .monitor-toggle svg {
+    width: 20px;
+    height: 20px;
+  }
+
+  .monitor-content {
+    width: calc(100vw - 32px);
+    max-width: 280px;
+    bottom: 60px;
+    right: -50vw;
+    transform: translateX(50vw);
+  }
+
+  .performance-monitor:hover .monitor-content {
+    right: -50vw;
+    transform: translateX(50vw);
+  }
+}

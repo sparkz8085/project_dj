@@ -1,5 +1,7 @@
 import { useMemo, useRef, useState, useEffect } from 'react'
 import LineWaves from './LineWaves'
+import PerformanceMonitor from './components/PerformanceMonitor'
+import { useDeviceOptimization } from './hooks/useDeviceOptimization'
 import './AuthPage.css'
 
 const defaultSignupForm = {
@@ -26,17 +28,15 @@ function AuthPage({ onLogin, onSignup }) {
   const [shaking, setShaking] = useState(false)
   const [showLoginPassword, setShowLoginPassword] = useState(false)
   const [showSignupPassword, setShowSignupPassword] = useState(false)
-  const [isMobile, setIsMobile] = useState(window.innerWidth < 768)
   const cardRef = useRef(null)
-
-  // Detect mobile device
-  useEffect(() => {
-    const handleResize = () => {
-      setIsMobile(window.innerWidth < 768)
-    }
-    window.addEventListener('resize', handleResize)
-    return () => window.removeEventListener('resize', handleResize)
-  }, [])
+  
+  // Device optimization hook
+  const { preset, specs, isReady } = useDeviceOptimization()
+  
+  // Derived values from preset
+  const isMobile = specs?.isMobile ?? window.innerWidth < 768
+  const enablePointerTracking = preset?.general?.enablePointerTracking ?? false
+  const animationDuration = preset?.general?.animationDuration ?? 600
 
   const title = useMemo(() => {
     if (mode === 'login') return 'Welcome back'
@@ -48,10 +48,10 @@ function AuthPage({ onLogin, onSignup }) {
   useEffect(() => {
     if (error) {
       setShaking(true)
-      const timer = setTimeout(() => setShaking(false), 600)
+      const timer = setTimeout(() => setShaking(false), animationDuration * 0.6)
       return () => clearTimeout(timer)
     }
-  }, [error])
+  }, [error, animationDuration])
 
   const handleSignupSubmit = (event) => {
     event.preventDefault()
@@ -140,27 +140,54 @@ function AuthPage({ onLogin, onSignup }) {
   return (
     <main className="auth-shell">
       <div className="auth-background" aria-hidden="true">
-        <LineWaves
-          speed={0.22}
-          innerLineCount={isMobile ? 6 : 14}
-          outerLineCount={isMobile ? 8 : 18}
-          warpIntensity={isMobile ? 0.5 : 0.9}
-          rotation={-32}
-          edgeFadeWidth={isMobile ? 40 : 72}
-          colorCycleSpeed={isMobile ? 0.4 : 0.7}
-          brightness={isMobile ? 0.25 : 0.45}
-          color1="#7dd3fc"
-          color2="#ffffff"
-          color3="#fde047"
-          enableMouseInteraction={!isMobile}
-          mouseInfluence={1.4}
-        />
+        {isReady && preset ? (
+          <LineWaves
+            speed={0.22}
+            innerLineCount={preset.lineWaves.innerLineCount}
+            outerLineCount={preset.lineWaves.outerLineCount}
+            warpIntensity={preset.lineWaves.warpIntensity}
+            rotation={-32}
+            edgeFadeWidth={preset.lineWaves.edgeFadeWidth}
+            colorCycleSpeed={preset.lineWaves.colorCycleSpeed}
+            brightness={preset.lineWaves.brightness}
+            color1="#7dd3fc"
+            color2="#ffffff"
+            color3="#fde047"
+            enableMouseInteraction={preset.lineWaves.enableMouseInteraction}
+            mouseInfluence={1.4}
+          />
+        ) : (
+          <LineWaves
+            speed={0.22}
+            innerLineCount={8}
+            outerLineCount={12}
+            warpIntensity={0.5}
+            rotation={-32}
+            edgeFadeWidth={40}
+            colorCycleSpeed={0.4}
+            brightness={0.3}
+            color1="#7dd3fc"
+            color2="#ffffff"
+            color3="#fde047"
+            enableMouseInteraction={false}
+            mouseInfluence={1.4}
+          />
+        )}
       </div>
       <section
         ref={cardRef}
         className={`auth-card ${shaking ? 'shake' : ''} ${error ? 'error' : ''}`}
-        onPointerMove={updateCardGlow}
-        onPointerLeave={resetCardGlow}
+        style={
+          preset && isReady
+            ? {
+                '--backdrop-blur': `${preset.cardEffects.backdropBlur}px`,
+                '--border-opacity': preset.cardEffects.borderOpacity,
+                '--shadow-opacity': preset.cardEffects.shadowOpacity,
+              }
+            : {}
+        }
+        onPointerMove={enablePointerTracking ? updateCardGlow : undefined}
+        onPointerLeave={enablePointerTracking ? resetCardGlow : undefined}
       >
         <div className="auth-hero">
           <p className="eyebrow">StageKart access</p>
@@ -355,6 +382,8 @@ function AuthPage({ onLogin, onSignup }) {
           </form>
         )}
       </section>
+
+      <PerformanceMonitor preset={preset} specs={specs} isReady={isReady} />
     </main>
   )
 }
