@@ -142,17 +142,17 @@ function AuthPage({ onLogin, onSignup }) {
       <div className="auth-background" aria-hidden="true">
         <LineWaves
           speed={0.22}
-          innerLineCount={14}
-          outerLineCount={18}
-          warpIntensity={0.9}
+          innerLineCount={isMobile ? 6 : 14}
+          outerLineCount={isMobile ? 8 : 18}
+          warpIntensity={isMobile ? 0.5 : 0.9}
           rotation={-32}
-          edgeFadeWidth={72}
-          colorCycleSpeed={0.7}
-          brightness={0.45}
+          edgeFadeWidth={isMobile ? 40 : 72}
+          colorCycleSpeed={isMobile ? 0.4 : 0.7}
+          brightness={isMobile ? 0.25 : 0.45}
           color1="#7dd3fc"
           color2="#ffffff"
           color3="#fde047"
-          enableMouseInteraction
+          enableMouseInteraction={!isMobile}
           mouseInfluence={1.4}
         />
       </div>
