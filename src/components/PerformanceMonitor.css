@@ -27,11 +27,21 @@
   box-shadow: 0 12px 32px rgba(64, 122, 255, 0.3);
 }
 
+.monitor-toggle:focus {
+  outline: 2px solid rgba(64, 122, 255, 0.5);
+  outline-offset: 2px;
+}
+
+.monitor-toggle:active {
+  transform: scale(0.95);
+}
+
 .monitor-toggle svg {
   width: 24px;
   height: 24px;
 }
 
+.performance-monitor.open .monitor-toggle,
 .performance-monitor:has(.monitor-content:hover) .monitor-toggle,
 .performance-monitor:hover .monitor-toggle {
   transform: scale(0.9);
@@ -54,11 +64,19 @@
   display: none;
 }
 
-.performance-monitor:hover .monitor-content {
-  display: block;
+/* Show on desktop hover */
+@media (hover: hover) {
+  .performance-monitor:hover .monitor-content {
+    display: block;
+  }
+
+  .monitor-content:hover {
+    display: block;
+  }
 }
 
-.monitor-content:hover {
+/* Show on mobile touch/click */
+.performance-monitor.open .monitor-content {
   display: block;
 }
 
@@ -177,8 +195,20 @@
     transform: translateX(50vw);
   }
 
-  .performance-monitor:hover .monitor-content {
+  .performance-monitor.open .monitor-content {
     right: -50vw;
     transform: translateX(50vw);
+  }
+
+  /* Disable hover effects on touch devices */
+  @media (hover: none) {
+    .performance-monitor:hover .monitor-toggle {
+      transform: scale(1);
+    }
+
+    .monitor-toggle:hover {
+      transform: scale(1);
+      box-shadow: 0 8px 24px rgba(0, 0, 0, 0.2);
+    }
   }
 }
