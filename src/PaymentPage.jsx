@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react'
+import { useMemo, useState } from 'react'
 import './PaymentPage.css'
 
 const payeeName = 'DJBooking'
@@ -17,20 +17,16 @@ const formatAmount = (amount) =>
   }).format(amount)
 
 function PaymentPage({ amount: initialAmount = defaultAmount, onBack }) {
-  const [amount, setAmount] = useState(initialAmount)
-  const [upiLink, setUpiLink] = useState(buildUpiLink(initialAmount))
-
-  useEffect(() => {
+  const [amount, setAmount] = useState(() => {
     const safeAmount =
       Number.isFinite(initialAmount) && initialAmount > 0 ? initialAmount : defaultAmount
 
-    setAmount(safeAmount)
-  }, [initialAmount])
-
-  useEffect(() => {
+    return safeAmount
+  })
+  const upiLink = useMemo(() => {
     const safeAmount = Number.isFinite(amount) && amount > 0 ? amount : defaultAmount
 
-    setUpiLink(buildUpiLink(safeAmount))
+    return buildUpiLink(safeAmount)
   }, [amount])
 
   const handleAmountChange = (event) => {

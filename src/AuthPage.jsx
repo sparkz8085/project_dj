@@ -1,7 +1,6 @@
 import { useMemo, useRef, useState, useEffect } from 'react'
 import LineWaves from './LineWaves'
 import PerformanceMonitor from './components/PerformanceMonitor'
-import { useDeviceOptimization } from './hooks/useDeviceOptimization'
 import './AuthPage.css'
 
 const defaultSignupForm = {
@@ -19,7 +18,7 @@ const defaultForgotPasswordForm = {
   email: '',
 }
 
-function AuthPage({ onLogin, onSignup }) {
+function AuthPage({ onLogin, onSignup, optimization }) {
   const [mode, setMode] = useState('login')
   const [signupForm, setSignupForm] = useState(defaultSignupForm)
   const [loginForm, setLoginForm] = useState(defaultLoginForm)
@@ -32,8 +31,7 @@ function AuthPage({ onLogin, onSignup }) {
   const shakeStartTimerRef = useRef(null)
   const shakeEndTimerRef = useRef(null)
   
-  // Device optimization hook
-  const { preset, specs, isReady } = useDeviceOptimization()
+  const { preset, specs, isReady } = optimization
   
   // Derived values from preset
   const isMobile = specs?.isMobile ?? window.innerWidth < 768
@@ -231,6 +229,9 @@ function AuthPage({ onLogin, onSignup }) {
             color3="#fde047"
             enableMouseInteraction={preset.lineWaves.enableMouseInteraction}
             mouseInfluence={1.4}
+            lineSegmentCount={preset.lineWaves.lineSegmentCount}
+            maxFps={preset.lineWaves.maxFps}
+            reducedMotion={preset.lineWaves.reducedMotion}
           />
         ) : (
           <LineWaves
@@ -247,6 +248,9 @@ function AuthPage({ onLogin, onSignup }) {
             color3="#fde047"
             enableMouseInteraction={false}
             mouseInfluence={1.4}
+            lineSegmentCount={8}
+            maxFps={24}
+            reducedMotion={false}
           />
         )}
       </div>
@@ -257,6 +261,8 @@ function AuthPage({ onLogin, onSignup }) {
           preset && isReady
             ? {
                 '--backdrop-blur': `${preset.cardEffects.backdropBlur}px`,
+                '--border-opacity': preset.cardEffects.borderOpacity,
+                '--shadow-opacity': preset.cardEffects.shadowOpacity,
               }
             : {}
         }

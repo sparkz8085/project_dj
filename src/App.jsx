@@ -5,6 +5,8 @@ import ComboPage from './ComboPage'
 import SpotlightCard from './SpotlightCard'
 import CheckoutPage from './CheckoutPage'
 import PaymentPage from './PaymentPage'
+import PerformanceMonitor from './components/PerformanceMonitor'
+import { useDeviceOptimization } from './hooks/useDeviceOptimization'
 
 const USERS_STORAGE_KEY = 'stagekart-users'
 const SESSION_STORAGE_KEY = 'stagekart-session'
@@ -524,6 +526,7 @@ const getViewFromHash = () => {
 }
 
 function App() {
+  const optimization = useDeviceOptimization()
   const [authUser, setAuthUser] = useState(() => {
     try {
       return JSON.parse(localStorage.getItem(SESSION_STORAGE_KEY) || 'null')
@@ -610,6 +613,9 @@ function App() {
   }, [])
 
   const activeComboPack = comboPacks[activeComboIndex % comboPacks.length]
+  const performancePreset = optimization.preset
+  const disableSpotlights = !performancePreset?.general?.enableSpotlightCards
+  const appPerformanceClass = performancePreset ? `performance-${performancePreset.name}` : 'performance-medium'
 
   const cartItems = useMemo(() => {
     return allProducts
@@ -697,7 +703,7 @@ function App() {
   }
 
   if (!authUser) {
-    return <AuthPage onLogin={handleLogin} onSignup={handleSignup} />
+    return <AuthPage onLogin={handleLogin} onSignup={handleSignup} optimization={optimization} />
   }
 
   if (view === 'checkout') {
@@ -736,7 +742,7 @@ function App() {
   }
 
   return (
-    <div className="storefront">
+    <div className={`storefront ${appPerformanceClass}`}>
       <header className="topbar">
         <div>
           <p className="eyebrow">Live DJ setup rentals</p>
@@ -819,6 +825,7 @@ function App() {
             key={activeComboPack.id}
             className="combo-overview-card combo-marquee-card"
             spotlightColor={activeComboPack.spotlightColor}
+            disabled={disableSpotlights}
           >
             <div className="product-topline">
               <span className="tag" style={{ background: activeComboPack.accentSoft, color: activeComboPack.accentColor }}>
@@ -872,7 +879,7 @@ function App() {
               const quantity = cart[product.id] || 0
 
               return (
-                <SpotlightCard key={product.id} className="product-card">
+                <SpotlightCard key={product.id} className="product-card" disabled={disableSpotlights}>
                   <div className="product-topline">
                     <span className="tag">{product.tag}</span>
                     {product.discount > 0 ? (
@@ -925,6 +932,11 @@ function App() {
           </div>
         </section>
       </main>
+      <PerformanceMonitor
+        preset={optimization.preset}
+        specs={optimization.specs}
+        isReady={optimization.isReady}
+      />
     </div>
   )
 }

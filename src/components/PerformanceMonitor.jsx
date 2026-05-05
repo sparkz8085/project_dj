@@ -1,30 +1,23 @@
-import { useState, useEffect, useRef } from 'react'
-import { PERFORMANCE_PRESETS } from '../hooks/useDeviceOptimization'
+import { useEffect, useRef, useState } from 'react'
 import './PerformanceMonitor.css'
+
+const isTouchSupported = () => {
+  return (
+    typeof window !== 'undefined' &&
+    (('ontouchstart' in window) ||
+      navigator.maxTouchPoints > 0 ||
+      navigator.msMaxTouchPoints > 0)
+  )
+}
 
 export default function PerformanceMonitor({ preset, specs, isReady }) {
   const [isOpen, setIsOpen] = useState(false)
-  const [isTouchDevice, setIsTouchDevice] = useState(false)
+  const [isTouchDevice] = useState(() => isTouchSupported())
   const monitorRef = useRef(null)
 
-  // Detect touch device
-  useEffect(() => {
-    const isTouchSupported = () => {
-      return (
-        typeof window !== 'undefined' &&
-        (('ontouchstart' in window) ||
-          (navigator.maxTouchPoints > 0) ||
-          (navigator.msMaxTouchPoints > 0))
-      )
-    }
-
-    setIsTouchDevice(isTouchSupported())
-  }, [])
-
-  // Close monitor when clicking outside
   useEffect(() => {
     if (!isOpen || !isTouchDevice) {
-      return
+      return undefined
     }
 
     const handleClickOutside = (event) => {
@@ -37,14 +30,13 @@ export default function PerformanceMonitor({ preset, specs, isReady }) {
     return () => document.removeEventListener('click', handleClickOutside)
   }, [isOpen, isTouchDevice])
 
-  // Return early AFTER all hooks
   if (!isReady || !preset || !specs) {
     return null
   }
 
   const handleToggle = () => {
     if (isTouchDevice) {
-      setIsOpen(!isOpen)
+      setIsOpen((currentValue) => !currentValue)
     }
   }
 
@@ -70,14 +62,12 @@ export default function PerformanceMonitor({ preset, specs, isReady }) {
   }
 
   return (
-    <div 
-      className={`performance-monitor ${isOpen ? 'open' : ''}`}
-      ref={monitorRef}
-    >
-      <button 
-        className="monitor-toggle" 
+    <div className={`performance-monitor ${isOpen ? 'open' : ''}`} ref={monitorRef}>
+      <button
+        className="monitor-toggle"
         title="Device Performance Info"
         onClick={handleToggle}
+        type="button"
       >
         <svg viewBox="0 0 24 24" fill="currentColor">
           <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm1 15h-2v-2h2v2zm0-4h-2V7h2v6z" />
@@ -102,38 +92,43 @@ export default function PerformanceMonitor({ preset, specs, isReady }) {
               <span>Type:</span> {specs.isDesktop ? 'Desktop' : specs.isTablet ? 'Tablet' : 'Mobile'}
             </li>
             <li>
-              <span>Resolution:</span> {specs.screenWidth} × {specs.screenHeight}
+              <span>Resolution:</span> {specs.screenWidth} x {specs.screenHeight}
             </li>
             <li>
               <span>Pixel Ratio:</span> {specs.pixelRatio}x
             </li>
+            {typeof preset.score === 'number' ? (
+              <li>
+                <span>Device Score:</span> {preset.score}/100
+              </li>
+            ) : null}
           </ul>
         </div>
 
-        {(specs.memory || specs.cores || specs.networkSpeed) && (
+        {(specs.memory || specs.cores || specs.networkSpeed || specs.saveData) && (
           <div className="monitor-section">
             <h4>System Resources</h4>
             <ul>
-              {specs.memory && (
+              {specs.memory ? (
                 <li>
                   <span>Memory:</span> {specs.memory}GB
                 </li>
-              )}
-              {specs.cores && (
+              ) : null}
+              {specs.cores ? (
                 <li>
                   <span>CPU Cores:</span> {specs.cores}
                 </li>
-              )}
-              {specs.networkSpeed && (
+              ) : null}
+              {specs.networkSpeed ? (
                 <li>
                   <span>Network:</span> {getNetworkLabel(specs.networkSpeed)}
                 </li>
-              )}
-              {specs.saveData && (
+              ) : null}
+              {specs.saveData ? (
                 <li className="alert">
                   <span>Data Saver:</span> Enabled
                 </li>
-              )}
+              ) : null}
             </ul>
           </div>
         )}
@@ -145,19 +140,38 @@ export default function PerformanceMonitor({ preset, specs, isReady }) {
               <span>LineWaves Lines:</span> {preset.lineWaves.innerLineCount} / {preset.lineWaves.outerLineCount}
             </li>
             <li>
+              <span>LineWaves FPS:</span> {preset.lineWaves.maxFps}
+            </li>
+            <li>
               <span>Backdrop Blur:</span> {Math.round(preset.cardEffects.backdropBlur)}px
             </li>
             <li>
-              <span>Pointer Tracking:</span> {preset.general.enablePointerTracking ? '✓ On' : '✗ Off'}
+              <span>Pointer Tracking:</span> {preset.general.enablePointerTracking ? 'On' : 'Off'}
             </li>
             <li>
-              <span>Reduced Motion:</span> {preset.cardEffects.reducedMotion ? '✓ Yes' : '✗ No'}
+              <span>Card Spotlights:</span> {preset.general.enableSpotlightCards ? 'On' : 'Off'}
+            </li>
+            <li>
+              <span>Reduced Motion:</span> {preset.cardEffects.reducedMotion ? 'Yes' : 'No'}
             </li>
           </ul>
         </div>
 
+        {preset.reasons?.length ? (
+          <div className="monitor-section">
+            <h4>Preset Reasons</h4>
+            <ul>
+              {preset.reasons.map((reason) => (
+                <li key={reason}>
+                  <span>{reason}</span>
+                </li>
+              ))}
+            </ul>
+          </div>
+        ) : null}
+
         <div className="monitor-footer">
-          <small>Auto-optimized for your device • May change on network/device changes</small>
+          <small>Auto-optimized for this device. Updates on resize, battery, and network changes.</small>
         </div>
       </div>
     </div>

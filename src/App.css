@@ -29,6 +29,13 @@
   background: rgba(255, 196, 61, 0.1);
 }
 
+.storefront.performance-ultra-low::before,
+.storefront.performance-ultra-low::after,
+.storefront.performance-low::before,
+.storefront.performance-low::after {
+  display: none;
+}
+
 .topbar,
 .hero-panel,
 .layout {
@@ -165,6 +172,31 @@
   background: rgba(9, 13, 28, 0.82);
   box-shadow: 0 16px 40px rgba(0, 0, 0, 0.32);
   backdrop-filter: blur(12px);
+}
+
+.storefront.performance-ultra-low .hero-copy,
+.storefront.performance-ultra-low .hero-summary,
+.storefront.performance-ultra-low .product-card,
+.storefront.performance-ultra-low .duration-card,
+.storefront.performance-ultra-low .bill-card,
+.storefront.performance-ultra-low .order-list,
+.storefront.performance-low .hero-copy,
+.storefront.performance-low .hero-summary,
+.storefront.performance-low .product-card,
+.storefront.performance-low .duration-card,
+.storefront.performance-low .bill-card,
+.storefront.performance-low .order-list {
+  backdrop-filter: none;
+  box-shadow: 0 8px 22px rgba(0, 0, 0, 0.24);
+}
+
+.storefront.performance-medium .hero-copy,
+.storefront.performance-medium .hero-summary,
+.storefront.performance-medium .product-card,
+.storefront.performance-medium .duration-card,
+.storefront.performance-medium .bill-card,
+.storefront.performance-medium .order-list {
+  backdrop-filter: blur(8px);
 }
 
 .hero-copy {

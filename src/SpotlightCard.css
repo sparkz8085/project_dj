@@ -25,6 +25,13 @@
   opacity: 0.6;
 }
 
+.card-spotlight.spotlight-disabled::before,
+.card-spotlight.spotlight-disabled:hover::before,
+.card-spotlight.spotlight-disabled:focus-within::before {
+  opacity: 0;
+  transition: none;
+}
+
 .card-spotlight > * {
   position: relative;
   z-index: 1;

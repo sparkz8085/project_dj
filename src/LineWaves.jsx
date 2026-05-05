@@ -16,13 +16,25 @@ function hexToRgba(hexColor, alpha) {
   return `rgba(${red}, ${green}, ${blue}, ${alpha})`
 }
 
-function createPath({ lineIndex, totalLines, width, height, phase, warpIntensity, mouseX, mouseY, mouseInfluence, enableMouseInteraction }) {
+function createPath({
+  lineIndex,
+  totalLines,
+  width,
+  height,
+  phase,
+  warpIntensity,
+  mouseX,
+  mouseY,
+  mouseInfluence,
+  enableMouseInteraction,
+  lineSegmentCount,
+}) {
   const centerY = height / 2
   const spread = height * 0.48
   const normalizedIndex = totalLines <= 1 ? 0.5 : lineIndex / (totalLines - 1)
   const lineCenter = centerY - spread + normalizedIndex * spread * 2
   const amplitude = (1 - Math.abs(normalizedIndex - 0.5) * 1.7) * 36 * warpIntensity
-  const segments = 16
+  const segments = Math.max(4, lineSegmentCount)
   const points = []
 
   for (let segment = 0; segment <= segments; segment += 1) {
@@ -71,24 +83,37 @@ export default function LineWaves({
   color3 = '#ffffff',
   enableMouseInteraction = false,
   mouseInfluence = 2,
+  lineSegmentCount = 12,
+  maxFps = 60,
+  reducedMotion = false,
 }) {
   const [phase, setPhase] = useState(0)
   const [pointer, setPointer] = useState({ x: 500, y: 500 })
 
   useEffect(() => {
+    if (reducedMotion || maxFps <= 0) {
+      return undefined
+    }
+
     let frameId = 0
     const startTime = performance.now()
+    let lastFrameTime = 0
+    const frameInterval = 1000 / Math.max(1, maxFps)
 
     const animate = (time) => {
-      const elapsed = (time - startTime) / 1000
-      setPhase(elapsed * (1.6 + speed * 2.2))
+      if (time - lastFrameTime >= frameInterval) {
+        const elapsed = (time - startTime) / 1000
+        setPhase(elapsed * (1.6 + speed * 2.2))
+        lastFrameTime = time
+      }
+
       frameId = window.requestAnimationFrame(animate)
     }
 
     frameId = window.requestAnimationFrame(animate)
 
     return () => window.cancelAnimationFrame(frameId)
-  }, [speed])
+  }, [maxFps, reducedMotion, speed])
 
   const lines = useMemo(() => {
     const width = 1000
@@ -113,6 +138,7 @@ export default function LineWaves({
           mouseY: pointer.y,
           mouseInfluence,
           enableMouseInteraction,
+          lineSegmentCount,
         }),
         stroke: color,
       }
@@ -125,6 +151,7 @@ export default function LineWaves({
     colorCycleSpeed,
     enableMouseInteraction,
     innerLineCount,
+    lineSegmentCount,
     mouseInfluence,
     outerLineCount,
     phase,

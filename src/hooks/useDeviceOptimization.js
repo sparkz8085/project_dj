@@ -1,28 +1,32 @@
-import { useEffect, useState } from 'react'
+import { useEffect, useRef, useState } from 'react'
 
 export const PERFORMANCE_PRESETS = {
   ULTRA_LOW: {
     name: 'ultra-low',
     label: 'Ultra Low',
     lineWaves: {
-      innerLineCount: 3,
-      outerLineCount: 4,
-      warpIntensity: 0.2,
-      colorCycleSpeed: 0.2,
-      brightness: 0.1,
-      edgeFadeWidth: 20,
+      innerLineCount: 2,
+      outerLineCount: 3,
+      lineSegmentCount: 6,
+      maxFps: 12,
+      warpIntensity: 0.14,
+      colorCycleSpeed: 0.12,
+      brightness: 0.08,
+      edgeFadeWidth: 12,
       enableMouseInteraction: false,
+      reducedMotion: true,
     },
     cardEffects: {
-      backdropBlur: 8,
+      backdropBlur: 0,
       borderOpacity: 0.08,
-      shadowOpacity: 0.2,
+      shadowOpacity: 0.14,
       enableGlowEffect: false,
       reducedMotion: true,
     },
     general: {
       enablePointerTracking: false,
-      animationDuration: 300,
+      enableSpotlightCards: false,
+      animationDuration: 220,
       reduceImageQuality: true,
     },
   },
@@ -30,24 +34,28 @@ export const PERFORMANCE_PRESETS = {
     name: 'low',
     label: 'Low',
     lineWaves: {
-      innerLineCount: 6,
-      outerLineCount: 8,
-      warpIntensity: 0.4,
-      colorCycleSpeed: 0.35,
-      brightness: 0.2,
-      edgeFadeWidth: 30,
+      innerLineCount: 4,
+      outerLineCount: 6,
+      lineSegmentCount: 8,
+      maxFps: 20,
+      warpIntensity: 0.28,
+      colorCycleSpeed: 0.24,
+      brightness: 0.16,
+      edgeFadeWidth: 24,
       enableMouseInteraction: false,
+      reducedMotion: false,
     },
     cardEffects: {
-      backdropBlur: 12,
-      borderOpacity: 0.12,
-      shadowOpacity: 0.25,
-      enableGlowEffect: true,
+      backdropBlur: 8,
+      borderOpacity: 0.1,
+      shadowOpacity: 0.18,
+      enableGlowEffect: false,
       reducedMotion: true,
     },
     general: {
       enablePointerTracking: false,
-      animationDuration: 400,
+      enableSpotlightCards: false,
+      animationDuration: 320,
       reduceImageQuality: true,
     },
   },
@@ -55,24 +63,28 @@ export const PERFORMANCE_PRESETS = {
     name: 'medium',
     label: 'Medium',
     lineWaves: {
-      innerLineCount: 10,
-      outerLineCount: 14,
-      warpIntensity: 0.6,
-      colorCycleSpeed: 0.55,
-      brightness: 0.35,
-      edgeFadeWidth: 50,
+      innerLineCount: 8,
+      outerLineCount: 10,
+      lineSegmentCount: 10,
+      maxFps: 30,
+      warpIntensity: 0.48,
+      colorCycleSpeed: 0.38,
+      brightness: 0.28,
+      edgeFadeWidth: 42,
       enableMouseInteraction: false,
+      reducedMotion: false,
     },
     cardEffects: {
-      backdropBlur: 18,
-      borderOpacity: 0.14,
-      shadowOpacity: 0.27,
+      backdropBlur: 14,
+      borderOpacity: 0.12,
+      shadowOpacity: 0.22,
       enableGlowEffect: true,
       reducedMotion: false,
     },
     general: {
       enablePointerTracking: false,
-      animationDuration: 500,
+      enableSpotlightCards: false,
+      animationDuration: 450,
       reduceImageQuality: false,
     },
   },
@@ -80,24 +92,28 @@ export const PERFORMANCE_PRESETS = {
     name: 'high',
     label: 'High',
     lineWaves: {
-      innerLineCount: 12,
-      outerLineCount: 16,
-      warpIntensity: 0.75,
-      colorCycleSpeed: 0.6,
-      brightness: 0.4,
-      edgeFadeWidth: 60,
+      innerLineCount: 10,
+      outerLineCount: 14,
+      lineSegmentCount: 12,
+      maxFps: 45,
+      warpIntensity: 0.64,
+      colorCycleSpeed: 0.5,
+      brightness: 0.36,
+      edgeFadeWidth: 56,
       enableMouseInteraction: true,
+      reducedMotion: false,
     },
     cardEffects: {
-      backdropBlur: 24,
+      backdropBlur: 20,
       borderOpacity: 0.14,
-      shadowOpacity: 0.28,
+      shadowOpacity: 0.26,
       enableGlowEffect: true,
       reducedMotion: false,
     },
     general: {
       enablePointerTracking: true,
-      animationDuration: 600,
+      enableSpotlightCards: true,
+      animationDuration: 560,
       reduceImageQuality: false,
     },
   },
@@ -105,16 +121,19 @@ export const PERFORMANCE_PRESETS = {
     name: 'ultra',
     label: 'Ultra',
     lineWaves: {
-      innerLineCount: 14,
-      outerLineCount: 18,
-      warpIntensity: 0.9,
-      colorCycleSpeed: 0.7,
-      brightness: 0.45,
-      edgeFadeWidth: 72,
+      innerLineCount: 12,
+      outerLineCount: 16,
+      lineSegmentCount: 14,
+      maxFps: 60,
+      warpIntensity: 0.78,
+      colorCycleSpeed: 0.62,
+      brightness: 0.42,
+      edgeFadeWidth: 70,
       enableMouseInteraction: true,
+      reducedMotion: false,
     },
     cardEffects: {
-      backdropBlur: 28,
+      backdropBlur: 26,
       borderOpacity: 0.14,
       shadowOpacity: 0.28,
       enableGlowEffect: true,
@@ -122,185 +141,314 @@ export const PERFORMANCE_PRESETS = {
     },
     general: {
       enablePointerTracking: true,
+      enableSpotlightCards: true,
       animationDuration: 600,
       reduceImageQuality: false,
     },
   },
 }
 
-function detectDeviceSpecs() {
-  const specs = {
-    isMobile: window.innerWidth < 768,
-    isTablet: window.innerWidth >= 768 && window.innerWidth < 1024,
-    isDesktop: window.innerWidth >= 1024,
-    screenWidth: window.innerWidth,
-    screenHeight: window.innerHeight,
-    pixelRatio: window.devicePixelRatio || 1,
-    memory: null,
-    cores: null,
-    networkSpeed: null,
-    gpuCapability: null,
-  }
+const PRESET_ORDER = [
+  PERFORMANCE_PRESETS.ULTRA_LOW,
+  PERFORMANCE_PRESETS.LOW,
+  PERFORMANCE_PRESETS.MEDIUM,
+  PERFORMANCE_PRESETS.HIGH,
+  PERFORMANCE_PRESETS.ULTRA,
+]
 
-  // Detect device memory (Mobile Devices Info API)
-  if (navigator.deviceMemory) {
-    specs.memory = navigator.deviceMemory
-  }
+const getPresetByName = (presetName) =>
+  PRESET_ORDER.find((preset) => preset.name === presetName) || PERFORMANCE_PRESETS.MEDIUM
 
-  // Detect CPU cores
-  if (navigator.hardwareConcurrency) {
-    specs.cores = navigator.hardwareConcurrency
-  }
+const canUseDom = () => typeof window !== 'undefined' && typeof navigator !== 'undefined'
 
-  // Detect network speed (Network Information API)
-  if (navigator.connection) {
-    const connection = navigator.connection
-    specs.networkSpeed = connection.effectiveType // '4g', '3g', '2g', 'slow-2g'
-    specs.saveData = connection.saveData || false
-  }
-
-  // Detect GPU capability via WebGL
+function detectGpuCapability() {
   try {
     const canvas = document.createElement('canvas')
     const gl = canvas.getContext('webgl') || canvas.getContext('experimental-webgl')
-    if (gl) {
-      specs.gpuCapability = 'supported'
-      const debugInfo = gl.getExtension('WEBGL_debug_renderer_info')
-      if (debugInfo) {
-        specs.gpuVendor = gl.getParameter(debugInfo.UNMASKED_VENDOR_WEBGL)
-        specs.gpuRenderer = gl.getParameter(debugInfo.UNMASKED_RENDERER_WEBGL)
-      }
+
+    if (!gl) {
+      return { gpuCapability: 'not-supported' }
     }
-  } catch (e) {
-    specs.gpuCapability = 'not-supported'
+
+    const details = { gpuCapability: 'supported' }
+    const debugInfo = gl.getExtension('WEBGL_debug_renderer_info')
+
+    if (debugInfo) {
+      details.gpuVendor = gl.getParameter(debugInfo.UNMASKED_VENDOR_WEBGL)
+      details.gpuRenderer = gl.getParameter(debugInfo.UNMASKED_RENDERER_WEBGL)
+    }
+
+    return details
+  } catch {
+    return { gpuCapability: 'not-supported' }
+  }
+}
+
+function detectDeviceSpecs(extraSpecs = {}) {
+  if (!canUseDom()) {
+    return {
+      isMobile: false,
+      isTablet: false,
+      isDesktop: true,
+      screenWidth: 1280,
+      screenHeight: 720,
+      pixelRatio: 1,
+      memory: null,
+      cores: null,
+      networkSpeed: null,
+      saveData: false,
+      prefersReducedMotion: false,
+      prefersReducedData: false,
+      gpuCapability: 'unknown',
+      ...extraSpecs,
+    }
   }
 
-  // Detect if reduced motion is preferred
-  specs.prefersReducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches
-  specs.prefersLowPowerMode = window.matchMedia('(prefers-color-scheme: dark)').matches
+  const connection = navigator.connection || navigator.mozConnection || navigator.webkitConnection
+  const screenWidth = window.innerWidth
+  const screenHeight = window.innerHeight
+  const pixelRatio = window.devicePixelRatio || 1
+  const pointerIsCoarse = window.matchMedia('(pointer: coarse)').matches
+  const hoverIsAvailable = window.matchMedia('(hover: hover)').matches
 
-  return specs
+  return {
+    isMobile: screenWidth < 768 || pointerIsCoarse,
+    isTablet: screenWidth >= 768 && screenWidth < 1100 && pointerIsCoarse,
+    isDesktop: screenWidth >= 1024 && !pointerIsCoarse,
+    screenWidth,
+    screenHeight,
+    pixelRatio,
+    viewportPixels: Math.round(screenWidth * screenHeight * pixelRatio * pixelRatio),
+    memory: navigator.deviceMemory || null,
+    cores: navigator.hardwareConcurrency || null,
+    networkSpeed: connection?.effectiveType || null,
+    downlink: connection?.downlink || null,
+    saveData: Boolean(connection?.saveData),
+    prefersReducedMotion: window.matchMedia('(prefers-reduced-motion: reduce)').matches,
+    prefersReducedData: window.matchMedia('(prefers-reduced-data: reduce)').matches,
+    pointerIsCoarse,
+    hoverIsAvailable,
+    ...detectGpuCapability(),
+    ...extraSpecs,
+  }
+}
+
+function scoreDevice(specs) {
+  let score = 55
+  const reasons = []
+
+  if (specs.memory) {
+    if (specs.memory <= 2) {
+      score -= 28
+      reasons.push('low memory')
+    } else if (specs.memory <= 4) {
+      score -= 14
+      reasons.push('limited memory')
+    } else if (specs.memory >= 8) {
+      score += 10
+      reasons.push('ample memory')
+    }
+  }
+
+  if (specs.cores) {
+    if (specs.cores <= 2) {
+      score -= 22
+      reasons.push('few CPU cores')
+    } else if (specs.cores <= 4) {
+      score -= 8
+    } else if (specs.cores >= 8) {
+      score += 10
+      reasons.push('many CPU cores')
+    }
+  }
+
+  if (specs.isMobile) {
+    score -= 12
+    reasons.push('mobile layout')
+  } else if (specs.isDesktop) {
+    score += 8
+  }
+
+  if (specs.viewportPixels > 6_000_000) {
+    score -= 10
+    reasons.push('high pixel workload')
+  }
+
+  if (specs.pixelRatio >= 3) {
+    score -= 8
+  }
+
+  if (specs.networkSpeed === 'slow-2g' || specs.networkSpeed === '2g') {
+    score -= 24
+    reasons.push('slow network')
+  } else if (specs.networkSpeed === '3g') {
+    score -= 12
+    reasons.push('moderate network')
+  } else if (specs.networkSpeed === '4g') {
+    score += 4
+  }
+
+  if (specs.saveData || specs.prefersReducedData) {
+    score -= 24
+    reasons.push('data saver')
+  }
+
+  if (specs.prefersReducedMotion) {
+    score = Math.min(score, 32)
+    reasons.push('reduced motion')
+  }
+
+  if (specs.batteryLevel !== null && specs.batteryLevel <= 0.2 && !specs.batteryCharging) {
+    score -= 20
+    reasons.push('low battery')
+  }
+
+  if (specs.gpuCapability === 'not-supported') {
+    score -= 10
+    reasons.push('limited graphics')
+  }
+
+  return {
+    score: Math.max(0, Math.min(100, Math.round(score))),
+    reasons,
+  }
 }
 
 function selectOptimalPreset(specs) {
-  // Check for accessibility preferences first
-  if (specs.prefersReducedMotion) {
-    return PERFORMANCE_PRESETS.LOW
+  const { score, reasons } = scoreDevice(specs)
+
+  let preset = PERFORMANCE_PRESETS.MEDIUM
+
+  if (score <= 22) {
+    preset = PERFORMANCE_PRESETS.ULTRA_LOW
+  } else if (score <= 42) {
+    preset = PERFORMANCE_PRESETS.LOW
+  } else if (score <= 64) {
+    preset = PERFORMANCE_PRESETS.MEDIUM
+  } else if (score <= 82) {
+    preset = PERFORMANCE_PRESETS.HIGH
+  } else {
+    preset = PERFORMANCE_PRESETS.ULTRA
   }
 
-  // Save data mode
-  if (specs.saveData) {
-    return PERFORMANCE_PRESETS.LOW
+  return {
+    ...preset,
+    score,
+    reasons,
   }
+}
 
-  // Mobile optimization
-  if (specs.isMobile) {
-    // Budget device: low memory, slow network
-    if ((specs.memory && specs.memory <= 2) || specs.networkSpeed === 'slow-2g' || specs.networkSpeed === '2g') {
-      return PERFORMANCE_PRESETS.ULTRA_LOW
-    }
-
-    // Low-end mobile: 2-4GB memory or 3G
-    if ((specs.memory && specs.memory <= 4) || specs.networkSpeed === '3g') {
-      return PERFORMANCE_PRESETS.LOW
-    }
-
-    // Mid-range mobile: 4-8GB memory or good 4G
-    if ((specs.memory && specs.memory <= 8) || specs.networkSpeed === '4g') {
-      return PERFORMANCE_PRESETS.MEDIUM
-    }
-
-    // High-end mobile: 8GB+ memory
-    return PERFORMANCE_PRESETS.HIGH
+function createSnapshot(extraSpecs) {
+  const specs = detectDeviceSpecs(extraSpecs)
+  return {
+    specs,
+    preset: selectOptimalPreset(specs),
+    isReady: true,
   }
-
-  // Tablet optimization
-  if (specs.isTablet) {
-    // Low-end tablet
-    if ((specs.memory && specs.memory <= 4) || specs.networkSpeed === '3g') {
-      return PERFORMANCE_PRESETS.MEDIUM
-    }
-
-    // Mid-range to high-end tablet
-    if (specs.memory && specs.memory <= 8) {
-      return PERFORMANCE_PRESETS.HIGH
-    }
-
-    return PERFORMANCE_PRESETS.HIGH
-  }
-
-  // Desktop optimization
-  if (specs.isDesktop) {
-    // Older desktop or laptop with limited resources
-    if ((specs.cores && specs.cores <= 2) || (specs.memory && specs.memory <= 4)) {
-      return PERFORMANCE_PRESETS.HIGH
-    }
-
-    // Modern desktop/laptop
-    return PERFORMANCE_PRESETS.ULTRA
-  }
-
-  // Default fallback
-  return PERFORMANCE_PRESETS.MEDIUM
 }
 
 export function useDeviceOptimization() {
-  const [preset, setPreset] = useState(null)
-  const [specs, setSpecs] = useState(null)
-  const [isReady, setIsReady] = useState(false)
+  const manualPresetRef = useRef(null)
+  const batteryRef = useRef(null)
+  const [snapshot, setSnapshot] = useState(() => createSnapshot())
 
   useEffect(() => {
-    // Initial detection
-    const detectedSpecs = detectDeviceSpecs()
-    const optimalPreset = selectOptimalPreset(detectedSpecs)
+    let resizeTimer = 0
+    let disposed = false
+    const connection = navigator.connection || navigator.mozConnection || navigator.webkitConnection
+    const reducedMotionQuery = window.matchMedia('(prefers-reduced-motion: reduce)')
+    const reducedDataQuery = window.matchMedia('(prefers-reduced-data: reduce)')
 
-    setSpecs(detectedSpecs)
-    setPreset(optimalPreset)
-    setIsReady(true)
+    const updateSnapshot = (extraSpecs) => {
+      if (manualPresetRef.current) {
+        setSnapshot({
+          ...createSnapshot(extraSpecs),
+          preset: getPresetByName(manualPresetRef.current),
+        })
+        return
+      }
 
-    // Listen for resize to update mobile detection
-    const handleResize = () => {
-      const updatedSpecs = detectDeviceSpecs()
-      const updatedPreset = selectOptimalPreset(updatedSpecs)
-
-      setSpecs(updatedSpecs)
-      setPreset(updatedPreset)
+      setSnapshot(createSnapshot(extraSpecs))
     }
 
-    // Listen for connection changes
-    const handleConnectionChange = () => {
-      const updatedSpecs = detectDeviceSpecs()
-      const updatedPreset = selectOptimalPreset(updatedSpecs)
+    const handleResize = () => {
+      window.clearTimeout(resizeTimer)
+      resizeTimer = window.setTimeout(() => updateSnapshot(), 160)
+    }
 
-      setSpecs(updatedSpecs)
-      setPreset(updatedPreset)
+    const handleBatteryChange = () => {
+      const battery = batteryRef.current
+
+      if (!battery) {
+        return
+      }
+
+      updateSnapshot({
+        batteryCharging: battery.charging,
+        batteryLevel: battery.level,
+      })
     }
 
     window.addEventListener('resize', handleResize)
-    if (navigator.connection) {
-      navigator.connection.addEventListener('change', handleConnectionChange)
+    window.addEventListener('orientationchange', handleResize)
+    const handleEnvironmentChange = () => updateSnapshot()
+
+    window.addEventListener('visibilitychange', handleEnvironmentChange)
+    connection?.addEventListener('change', handleEnvironmentChange)
+    reducedMotionQuery.addEventListener('change', handleEnvironmentChange)
+    reducedDataQuery.addEventListener('change', handleEnvironmentChange)
+
+    if (navigator.getBattery) {
+      navigator.getBattery().then((battery) => {
+        if (disposed) {
+          return
+        }
+
+        batteryRef.current = battery
+        battery.addEventListener('chargingchange', handleBatteryChange)
+        battery.addEventListener('levelchange', handleBatteryChange)
+        handleBatteryChange()
+      })
     }
 
     return () => {
+      disposed = true
+      window.clearTimeout(resizeTimer)
       window.removeEventListener('resize', handleResize)
-      if (navigator.connection) {
-        navigator.connection.removeEventListener('change', handleConnectionChange)
+      window.removeEventListener('orientationchange', handleResize)
+      window.removeEventListener('visibilitychange', handleEnvironmentChange)
+      connection?.removeEventListener('change', handleEnvironmentChange)
+      reducedMotionQuery.removeEventListener('change', handleEnvironmentChange)
+      reducedDataQuery.removeEventListener('change', handleEnvironmentChange)
+
+      if (batteryRef.current) {
+        batteryRef.current.removeEventListener('chargingchange', handleBatteryChange)
+        batteryRef.current.removeEventListener('levelchange', handleBatteryChange)
       }
     }
   }, [])
 
-  // Manually override preset if needed
   const setCustomPreset = (presetName) => {
-    const customPreset = Object.values(PERFORMANCE_PRESETS).find((p) => p.name === presetName)
-    if (customPreset) {
-      setPreset(customPreset)
-    }
+    const customPreset = getPresetByName(presetName)
+    manualPresetRef.current = customPreset.name
+    setSnapshot((currentSnapshot) => ({
+      ...currentSnapshot,
+      preset: {
+        ...customPreset,
+        score: currentSnapshot.preset?.score ?? 0,
+        reasons: ['manual override'],
+      },
+    }))
+  }
+
+  const clearCustomPreset = () => {
+    manualPresetRef.current = null
+    setSnapshot(createSnapshot())
   }
 
   return {
-    preset,
-    specs,
-    isReady,
+    ...snapshot,
     setCustomPreset,
+    clearCustomPreset,
   }
 }
