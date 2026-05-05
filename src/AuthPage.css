@@ -120,7 +120,7 @@
 
 .auth-tabs {
   display: grid;
-  grid-template-columns: repeat(2, minmax(0, 1fr));
+  grid-template-columns: repeat(3, minmax(0, 1fr));
   gap: 10px;
   margin-top: 24px;
   padding: 6px;
@@ -182,10 +182,153 @@
   color: #fff;
 }
 
+.password-input-wrapper {
+  position: relative;
+  display: flex;
+  align-items: center;
+}
+
+.password-input-wrapper input {
+  width: 100%;
+  padding-right: 44px;
+}
+
+.password-toggle {
+  position: absolute;
+  right: 12px;
+  top: 50%;
+  transform: translateY(-50%);
+  background: none;
+  border: none;
+  cursor: pointer;
+  padding: 6px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #a1aed6;
+  transition: color 0.2s ease;
+}
+
+.password-toggle:hover {
+  color: #dce6ff;
+}
+
+.password-toggle svg {
+  width: 20px;
+  height: 20px;
+}
+
 .auth-button {
   margin-top: 8px;
   background: linear-gradient(135deg, #ffd84d 0%, #ffef9a 100%);
   color: #111827;
+}
+
+.auth-divider {
+  display: flex;
+  align-items: center;
+  margin: 16px 0;
+  color: #a1aed6;
+  font-size: 13px;
+  font-weight: 600;
+}
+
+.auth-divider::before,
+.auth-divider::after {
+  content: '';
+  flex: 1;
+  height: 1px;
+  background: rgba(138, 160, 255, 0.18);
+}
+
+.auth-divider span {
+  padding: 0 12px;
+}
+
+.gmail-button {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  margin-top: 8px;
+  background: linear-gradient(135deg, rgba(255, 255, 255, 0.08), rgba(255, 255, 255, 0.02));
+  color: #f6f8ff;
+  border: 1px solid rgba(138, 160, 255, 0.25);
+  transition: all 0.3s ease;
+}
+
+.gmail-button:hover {
+  background: linear-gradient(135deg, rgba(255, 255, 255, 0.12), rgba(255, 255, 255, 0.06));
+  border-color: rgba(138, 160, 255, 0.4);
+  transform: translateY(-2px);
+}
+
+.gmail-icon {
+  width: 20px;
+  height: 20px;
+  color: #ff6b6b;
+}
+
+.forgot-subtitle {
+  margin: 0 0 16px 0;
+  color: #b7c3e2;
+  font-size: 14px;
+  line-height: 1.5;
+}
+
+/* Shake animation */
+@keyframes shake {
+  0%, 100% {
+    transform: perspective(1200px) rotateX(var(--glow-tilt-y)) rotateY(var(--glow-tilt-x)) translateX(0);
+  }
+  10%, 30%, 50%, 70%, 90% {
+    transform: perspective(1200px) rotateX(var(--glow-tilt-y)) rotateY(var(--glow-tilt-x)) translateX(-8px);
+  }
+  20%, 40%, 60%, 80% {
+    transform: perspective(1200px) rotateX(var(--glow-tilt-y)) rotateY(var(--glow-tilt-x)) translateX(8px);
+  }
+}
+
+/* Error state with red liquid glass effect */
+.auth-card.error {
+  border-color: rgba(255, 107, 107, 0.4);
+  box-shadow:
+    0 24px 70px rgba(0, 0, 0, 0.28),
+    inset 0 1px 0 rgba(255, 107, 107, 0.3),
+    inset 0 0 0 1px rgba(255, 107, 107, 0.15),
+    0 0 40px rgba(255, 107, 107, 0.2);
+  background:
+    linear-gradient(135deg, rgba(255, 107, 107, 0.08), rgba(255, 107, 107, 0.02)),
+    rgba(9, 13, 28, 0.32);
+}
+
+.auth-card.error::before {
+  background:
+    linear-gradient(
+      135deg,
+      rgba(255, 107, 107, 0.28) 0%,
+      rgba(255, 107, 107, 0.08) 18%,
+      transparent 38%
+    ),
+    radial-gradient(
+      circle at var(--glow-x) var(--glow-y),
+      rgba(255, 107, 107, 0.2),
+      rgba(255, 107, 107, 0.08) 24%,
+      transparent 58%
+    ),
+    radial-gradient(circle at top left, rgba(255, 107, 107, 0.08), transparent 34%),
+    radial-gradient(circle at bottom right, rgba(255, 107, 107, 0.1), transparent 38%);
+}
+
+.auth-card.error::after {
+  background:
+    radial-gradient(circle at var(--glow-x) var(--glow-y), rgba(255, 107, 107, 0.12), transparent 34%),
+    linear-gradient(180deg, rgba(255, 107, 107, 0.1), transparent 22%);
+}
+
+/* Shake animation trigger */
+.auth-card.shake {
+  animation: shake 0.6s cubic-bezier(0.36, 0.07, 0.19, 0.97) both;
 }
 
 @media (max-width: 520px) {
