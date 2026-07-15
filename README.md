@@ -1,6 +1,6 @@
 # 🚀 Project DJ
 
-[![GitHub repo size](https://img.shields.io/github/repo-size/sparkz8085/project_dj?style=for-the-badge&color=orange)](https://github.com/sparkz8085/project_dj)
+[![GitHub repo size](https://img.shields.io/github/repo-size/sparkz8085/project_dj?style=for-the-badge&color=lightblue)](https://github.com/sparkz8085/project_dj)
 [![GitHub stars](https://img.shields.io/github/stars/sparkz8085/project_dj?style=for-the-badge&color=gold)](https://github.com/sparkz8085/project_dj/stargazers)
 [![GitHub forks](https://img.shields.io/github/forks/sparkz8085/project_dj?style=for-the-badge&color=blue)](https://github.com/sparkz8085/project_dj/network/members)
 [![License: MIT](https://img.shields.io/badge/License-MIT-green.svg?style=for-the-badge)](https://opensource.org/licenses/MIT)
