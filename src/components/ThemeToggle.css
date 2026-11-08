@@ -18,9 +18,17 @@
   -webkit-tap-highlight-color: transparent;
   backdrop-filter: blur(16px);
   box-shadow: 0 10px 34px rgba(0,0,0,.24);
-  transition: background .45s ease, border-color .45s ease, box-shadow .45s ease;
+  opacity: 1;
+  transition: background .45s ease, border-color .45s ease, box-shadow .45s ease, opacity .8s ease, backdrop-filter .8s ease;
 }
 .theme-toggle:active { cursor: grabbing; }
+/* Fade back after inactivity so the page artwork remains visible. */
+.theme-toggle.is-idle { opacity: .38; backdrop-filter: blur(5px); box-shadow: 0 5px 16px rgba(0,0,0,.10); }
+.theme-toggle.is-idle:hover,
+.theme-toggle.is-idle:focus-visible,
+.theme-toggle.is-idle:focus-within,
+.theme-toggle:active { opacity: 1; backdrop-filter: blur(16px); }
+@media (prefers-reduced-motion: reduce) { .theme-toggle { transition: none; } }
 .theme-toggle-track { position:absolute; inset:5px; border-radius:inherit; background:linear-gradient(90deg,rgba(42,61,105,.85),rgba(13,22,46,.85)); }
 .theme-toggle-thumb { position:relative; z-index:2; width:44px; height:44px; flex:none; display:grid; place-items:center; border-radius:50%; background:linear-gradient(145deg,#243b68,#101a35); box-shadow:0 0 0 1px rgba(255,255,255,.16),0 0 20px rgba(93,155,255,.65); transform:translateX(0); transition:transform .55s cubic-bezier(.2,.9,.2,1),background .45s ease,box-shadow .45s ease; }
 .theme-toggle.is-light .theme-toggle-thumb { transform:translateX(76px); background:linear-gradient(145deg,#fff4bc,#ffbd45); box-shadow:0 0 0 1px rgba(255,255,255,.8),0 0 24px rgba(255,184,54,.85); }
