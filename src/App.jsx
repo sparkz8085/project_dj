@@ -1,4 +1,5 @@
 import { useEffect, useMemo, useState } from 'react'
+import { createPortal } from 'react-dom'
 import './App.css'
 import AuthPage from './AuthPage'
 import ComboPage from './ComboPage'
@@ -7,6 +8,11 @@ import CheckoutPage from './CheckoutPage'
 import PaymentPage from './PaymentPage'
 import PerformanceMonitor from './components/PerformanceMonitor'
 import { useDeviceOptimization } from './hooks/useDeviceOptimization'
+import ThemeToggle from './components/ThemeToggle'
+
+function ThemePortal({ theme, onToggle }) {
+  return createPortal(<ThemeToggle theme={theme} onToggle={onToggle} />, document.body)
+}
 
 const USERS_STORAGE_KEY = 'stagekart-users'
 const SESSION_STORAGE_KEY = 'stagekart-session'
@@ -527,6 +533,15 @@ const getViewFromHash = () => {
 
 function App() {
   const optimization = useDeviceOptimization()
+  const [theme, setTheme] = useState(() => {
+    try { return localStorage.getItem('stagekart-theme') || 'dark' } catch { return 'dark' }
+  })
+  const toggleTheme = () => setTheme((current) => current === 'dark' ? 'light' : 'dark')
+
+  useEffect(() => {
+    document.documentElement.dataset.theme = theme
+    try { localStorage.setItem('stagekart-theme', theme) } catch { /* storage may be unavailable */ }
+  }, [theme])
   const [authUser, setAuthUser] = useState(() => {
     try {
       return JSON.parse(localStorage.getItem(SESSION_STORAGE_KEY) || 'null')
@@ -703,12 +718,12 @@ function App() {
   }
 
   if (!authUser) {
-    return <AuthPage onLogin={handleLogin} onSignup={handleSignup} optimization={optimization} />
+    return <><AuthPage onLogin={handleLogin} onSignup={handleSignup} optimization={optimization} /><ThemePortal theme={theme} onToggle={toggleTheme} /></>
   }
 
   if (view === 'checkout') {
     return (
-      <CheckoutPage
+      <><CheckoutPage
         cartItems={cartItems}
         selectedDuration={selectedDuration}
         durations={durations}
@@ -720,29 +735,30 @@ function App() {
         formatCurrency={formatCurrency}
         onBack={returnToCatalog}
         onProceed={openPaymentPage}
-      />
+      /><ThemePortal theme={theme} onToggle={toggleTheme} /></>
     )
   }
 
   if (view === 'combos') {
     return (
-      <ComboPage
+      <><ComboPage
         comboPacks={comboPacks}
         cart={cart}
         formatCurrency={formatCurrency}
         updateQuantity={updateQuantity}
         onBack={openCatalogPage}
         onProceed={openCheckoutPage}
-      />
+      /><ThemePortal theme={theme} onToggle={toggleTheme} /></>
     )
   }
 
   if (view === 'payment') {
-    return <PaymentPage amount={grandTotal} onBack={returnToCheckout} />
+    return <><PaymentPage amount={grandTotal} onBack={returnToCheckout} /><ThemePortal theme={theme} onToggle={toggleTheme} /></>
   }
 
   return (
     <div className={`storefront ${appPerformanceClass}`}>
+      <ThemePortal theme={theme} onToggle={toggleTheme} />
       <header className="topbar">
         <div>
           <p className="eyebrow">Live DJ setup rentals</p>
