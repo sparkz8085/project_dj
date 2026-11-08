@@ -1,4 +1,4 @@
-import { useRef } from 'react'
+import { useEffect, useRef, useState } from 'react'
 import './ThemeToggle.css'
 
 const DOTS = Array.from({ length: 13 * 13 }, (_, index) => {
@@ -14,14 +14,29 @@ const DOTS = Array.from({ length: 13 * 13 }, (_, index) => {
 export default function ThemeToggle({ theme, onToggle }) {
   const startX = useRef(null)
   const dragged = useRef(false)
+  const [activityKey, setActivityKey] = useState(0)
+  const [isIdle, setIsIdle] = useState(false)
   const isLight = theme === 'light'
 
+  useEffect(() => {
+    setIsIdle(false)
+    const timeoutId = window.setTimeout(() => setIsIdle(true), 4500)
+    return () => window.clearTimeout(timeoutId)
+  }, [activityKey])
+
+  const wakeToggle = () => {
+    setIsIdle(false)
+    setActivityKey((current) => current + 1)
+  }
+
   const handlePointerDown = (event) => {
+    wakeToggle()
     startX.current = event.clientX
     dragged.current = false
     event.currentTarget.setPointerCapture?.(event.pointerId)
   }
   const handlePointerUp = (event) => {
+    wakeToggle()
     if (startX.current !== null && Math.abs(event.clientX - startX.current) > 8) {
       dragged.current = true
       const nextLight = event.clientX > startX.current
@@ -30,6 +45,7 @@ export default function ThemeToggle({ theme, onToggle }) {
     startX.current = null
   }
   const handleClick = () => {
+    wakeToggle()
     if (dragged.current) { dragged.current = false; return }
     onToggle()
   }
@@ -37,11 +53,13 @@ export default function ThemeToggle({ theme, onToggle }) {
   return (
     <button
       type="button"
-      className={`theme-toggle ${isLight ? 'is-light' : 'is-dark'}`}
+      className={`theme-toggle ${isLight ? 'is-light' : 'is-dark'} ${isIdle ? 'is-idle' : ''}`} 
       role="switch"
       aria-checked={isLight}
       aria-label={`Switch to ${isLight ? 'dark' : 'light'} theme`}
       onPointerDown={handlePointerDown}
+      onMouseEnter={wakeToggle}
+      onFocus={wakeToggle}
       onPointerUp={handlePointerUp}
       onPointerCancel={() => { startX.current = null }}
       onClick={handleClick}
