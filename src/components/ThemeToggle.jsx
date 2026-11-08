@@ -20,7 +20,7 @@ export default function ThemeToggle({ theme, onToggle }) {
 
   useEffect(() => {
     setIsIdle(false)
-    const timeoutId = window.setTimeout(() => setIsIdle(true), 4500)
+    const timeoutId = window.setTimeout(() => setIsIdle(true), 3000)
     return () => window.clearTimeout(timeoutId)
   }, [activityKey])
 
