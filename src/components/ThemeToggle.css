@@ -23,8 +23,7 @@
 }
 .theme-toggle:active { cursor: grabbing; }
 /* Fade back after inactivity so the page artwork remains visible. */
-.theme-toggle.is-idle { opacity: .38; backdrop-filter: blur(5px); box-shadow: 0 5px 16px rgba(0,0,0,.10); }
-.theme-toggle.is-idle:hover,
+.theme-toggle.is-idle { opacity: .20; backdrop-filter: blur(2px); box-shadow: 0 3px 10px rgba(0,0,0,.06); }
 .theme-toggle.is-idle:focus-visible,
 .theme-toggle.is-idle:focus-within,
 .theme-toggle:active { opacity: 1; backdrop-filter: blur(16px); }
