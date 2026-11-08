@@ -35,3 +35,41 @@
 .theme-toggle:focus-visible { outline:3px solid #60a5fa; outline-offset:4px; }
 @media(max-width:600px) { .theme-toggle { top:auto; bottom:18px; right:16px; width:124px; height:50px; } .theme-toggle-thumb { width:40px;height:40px; } .theme-toggle.is-light .theme-toggle-thumb,.theme-toggle.is-light .theme-toggle-glow { transform:translateX(74px); } }
 @media(prefers-reduced-motion:reduce) { .theme-toggle,.theme-toggle * { transition-duration:.01ms!important; } }
+
+
+/* Theme-aware palette */
+html[data-theme='light'] { color-scheme: light; }
+html[data-theme='light'] body {
+  color:#1e293b;
+  background:radial-gradient(circle at top left,rgba(59,130,246,.10),transparent 30%),linear-gradient(180deg,#f8fbff 0%,#edf3fb 55%,#f8fafc 100%);
+}
+html[data-theme='light'] .storefront::before { background:rgba(59,130,246,.10); }
+html[data-theme='light'] .storefront::after { background:rgba(245,158,11,.10); }
+html[data-theme='light'] .topbar { color:#172033;background:linear-gradient(135deg,#ffffff,#eaf1ff);border-color:rgba(71,105,160,.18);box-shadow:0 16px 40px rgba(31,55,90,.12); }
+html[data-theme='light'] .brand-row h1,html[data-theme='light'] .hero-copy h2,html[data-theme='light'] .section-head h3,html[data-theme='light'] .product-card h4,html[data-theme='light'] .combo-overview-card h4 { color:#172033; }
+html[data-theme='light'] .brand-badge { color:#51370a; }
+html[data-theme='light'] .hero-copy,html[data-theme='light'] .hero-summary,html[data-theme='light'] .product-card,html[data-theme='light'] .duration-card,html[data-theme='light'] .bill-card,html[data-theme='light'] .order-list,html[data-theme='light'] .combo-overview-card,html[data-theme='light'] .checkout-page-panel,html[data-theme='light'] .combo-select-card,html[data-theme='light'] .combo-summary-card { background:rgba(255,255,255,.88);border-color:rgba(71,105,160,.16);box-shadow:0 14px 36px rgba(31,55,90,.09); }
+html[data-theme='light'] .hero-summary { background:linear-gradient(180deg,#eaf1ff,#fff);color:#172033; }
+html[data-theme='light'] .hero-summary span,html[data-theme='light'] .hero-summary p,html[data-theme='light'] .hero-copy p,html[data-theme='light'] .section-head p,html[data-theme='light'] .product-card p,html[data-theme='light'] .combo-overview-card p,html[data-theme='light'] .combo-summary-text { color:#52627b; }
+html[data-theme='light'] .hero-stats div,html[data-theme='light'] .combo-components,html[data-theme='light'] .combo-summary-list li { background:#f1f5fb;border-color:rgba(71,105,160,.12); }
+html[data-theme='light'] .hero-stats strong,html[data-theme='light'] .price-row strong,html[data-theme='light'] .bill-total strong,html[data-theme='light'] .bill-total span,html[data-theme='light'] .bill-row strong,html[data-theme='light'] .order-item span { color:#172033; }
+html[data-theme='light'] .hero-stats span,html[data-theme='light'] .bill-row span,html[data-theme='light'] .order-item small,html[data-theme='light'] .combo-summary-list li small { color:#64748b; }
+html[data-theme='light'] .searchbar,html[data-theme='light'] .quantity-row,html[data-theme='light'] .duration-grid button { background:#f1f5fb;border-color:rgba(71,105,160,.18); }
+html[data-theme='light'] .searchbar input,html[data-theme='light'] .searchbar input::placeholder,html[data-theme='light'] .quantity-row span,html[data-theme='light'] .quantity-row button,html[data-theme='light'] .duration-grid button { color:#26364d; }
+html[data-theme='light'] .quantity-row button { background:#e2eaf6; }
+html[data-theme='light'] .section-chip,html[data-theme='light'] .tag { color:#31527f;background:#e6efff;border-color:rgba(71,105,160,.14); }
+html[data-theme='light'] .combo-components li,html[data-theme='light'] .combo-summary-list li { color:#26364d; }
+html[data-theme='light'] .combo-components li span { color:#52627b; }
+html[data-theme='light'] .payment-card,html[data-theme='light'] .auth-card { background:rgba(255,255,255,.88);border-color:rgba(71,105,160,.2);box-shadow:0 24px 60px rgba(31,55,90,.14); }
+html[data-theme='light'] .auth-hero h1,html[data-theme='light'] .payment-card h1 { color:#172033; }
+html[data-theme='light'] .auth-hero p,html[data-theme='light'] .subtitle,html[data-theme='light'] .forgot-subtitle { color:#52627b; }
+html[data-theme='light'] .auth-form span,html[data-theme='light'] .amount-field { color:#334155; }
+html[data-theme='light'] .auth-form input,html[data-theme='light'] .amount-field input { background:#f8fafc;color:#172033;border-color:#cbd5e1; }
+html[data-theme='light'] .auth-tabs { background:#edf2f9; }
+html[data-theme='light'] .auth-tabs button { color:#475569; }
+html[data-theme='light'] .auth-tabs button.active { color:#fff; }
+html[data-theme='light'] .gmail-button,html[data-theme='light'] .back-button { color:#334155;background:#f1f5f9;border-color:#cbd5e1; }
+html[data-theme='light'] .amount-total { color:#172033; }
+html[data-theme='light'] .fallback-text { color:#64748b; }
+html[data-theme='light'] .payment-card .eyebrow { color:#315fc4; }
+html[data-theme='light'] .auth-card::before,html[data-theme='light'] .auth-card::after { opacity:.25; }
